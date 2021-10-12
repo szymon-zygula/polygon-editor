@@ -44,5 +44,20 @@ namespace polygon_editor
                 polygon.Points.First().Item1, polygon.Points.First().Item2
             );
         }
+
+        public static void MarkPolygonVertices(UInt32[] pixels, int width, UInt32 color, int r, Polygon polygon)
+        {
+            foreach((int, int) point in polygon.Points)
+            {
+                BresenhamDrawer.Circle(
+                    pixels,
+                    color,
+                    width,
+                    r,
+                    point.Item1,
+                    point.Item2
+                );
+            }
+        }
     }
 }

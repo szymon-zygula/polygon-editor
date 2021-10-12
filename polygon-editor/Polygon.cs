@@ -25,11 +25,17 @@ namespace polygon_editor
             Points = newPoints;
         }
 
-        public void RemoveLastPoint()
+        public void RemoveNthPoint(int n)
         {
             (int, int)[] newPoints = new (int, int)[Points.Length - 1];
-            Array.Copy(Points, newPoints, Points.Length - 1);
+            Array.Copy(Points, newPoints, n);
+            Array.Copy(Points, n + 1, newPoints, n, Points.Length - n - 1);
             Points = newPoints;
+        }
+
+        public void RemoveLastPoint()
+        {
+            RemoveNthPoint(Points.Length - 1);
         }
 
         public override string ToString()

@@ -21,6 +21,10 @@ namespace polygon_editor
         static UInt32 CANVAS_BACKGROUND_COLOR = 0xFFE0E0E0;
         static UInt32 CANVAS_NORMAL_LINE_COLOR = 0xFF0000FF;
         static UInt32 CANVAS_ACTIVE_LINE_COLOR = 0xFF00BB00;
+        static UInt32 CANVAS_ACTIVE_VERTEX_COLOR = 0xFFFF0000;
+
+        static int CANVAS_ACTIVE_VERTEX_RADIUS = 5;
+
         UInt32[] CanvasData;
         int CanvasWidth;
         int CanvasHeight;
@@ -31,6 +35,7 @@ namespace polygon_editor
         int TotalPolygonCount = 0;
         int TotalCircleCount = 0;
 
+        // TODO: Just use CurrentlyDrawnPolygon != null
         bool IsDrawingPolygon = false;
 
         Polygon CurrentlyDrawnPolygon;
@@ -72,6 +77,11 @@ namespace polygon_editor
             foreach(Polygon polygon in Polygons)
             {
                 BitmapHelper.DrawPolygon(CanvasData, CanvasWidth, polygon);
+            }
+
+            if(ActivePolygon != null)
+            {
+                BitmapHelper.MarkPolygonVertices(CanvasData, CanvasWidth, CANVAS_ACTIVE_VERTEX_COLOR, CANVAS_ACTIVE_VERTEX_RADIUS, ActivePolygon);
             }
 
             BitmapSource bitmap = BitmapSource.Create(
@@ -131,6 +141,38 @@ namespace polygon_editor
         }
 
         private void CanvasImage_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if(IsDrawingPolygon)
+            {
+                StopDrawingPolygon();
+            }
+
+            if(ActivePolygon != null)
+            {
+                double mouseX = e.GetPosition(CanvasImage).X;
+                double mouseY = e.GetPosition(CanvasImage).Y;
+                for(int i = 0; i < ActivePolygon.Points.Length; ++i)
+                {
+                    double x = (double)ActivePolygon.Points[i].Item1 - mouseX;
+                    double y = (double)ActivePolygon.Points[i].Item2 - mouseY;
+                    if(x * x + y * y < CANVAS_ACTIVE_VERTEX_RADIUS * CANVAS_ACTIVE_VERTEX_RADIUS)
+                    {
+                        ActivePolygon.RemoveNthPoint(i);
+                        if(ActivePolygon.Points.Length < 3)
+                        {
+                            Polygons.Remove(ActivePolygon);
+                            ShapeList.Items.RemoveAt(ShapeList.SelectedIndex);
+                            ShapeList.SelectedItems.Clear();
+                            ActivePolygon = null;
+                        }
+                        UpdateCanvasImage();
+                        return;
+                    }
+                }
+            }
+        }
+
+        private void StopDrawingPolygon()
         {
             CanvasImage.Cursor = CANVAS_NORMAL_CURSOR;
             IsDrawingPolygon = false;
