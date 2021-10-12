@@ -15,7 +15,7 @@ namespace polygon_editor
             int yi = 1;
             if(dy < 0)
             {
-                y1 = -1;
+                yi = -1;
                 dy = -dy;
             }
 

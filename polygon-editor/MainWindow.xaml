@@ -15,11 +15,15 @@
             Name="CanvasImage"
             Width="512px"
             Height="384px"
-            />
+            MouseMove="CanvasImage_MouseMove"
+            MouseLeftButtonUp="CanvasImage_MouseLeftButtonUp"
+            MouseRightButtonUp="CanvasImage_MouseRightButtonUp"
+        />
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30px" />
                 <RowDefinition Height="30px" />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Button
                 Grid.Row="0"
@@ -34,6 +38,11 @@
                 Name="ButtonDrawCircle"
                 Content="Draw circle"
                 Click="ButtonDrawCircle_Click"
+            />
+            <ListView
+                Name="ShapeList"
+                Grid.Row="2"
+                SelectionChanged="ShapeList_SelectionChanged"
             />
         </Grid>
     </Grid>
