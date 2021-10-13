@@ -45,6 +45,21 @@ namespace polygon_editor
             );
         }
 
+        public static void MarkPolygonEdges(UInt32[] pixels, int width, UInt32 color, int r, Polygon polygon)
+        {
+            for(int i = 0; i < polygon.Points.Length; ++i)
+            {
+                Polygon square = new Polygon();
+                (int, int) mid = polygon.EdgeMidpoint(i);
+                square.AddPoint(mid.Item1 + r, mid.Item2 + r);
+                square.AddPoint(mid.Item1 - r, mid.Item2 + r);
+                square.AddPoint(mid.Item1 - r, mid.Item2 - r);
+                square.AddPoint(mid.Item1 + r, mid.Item2 - r);
+                square.Color = color;
+                DrawPolygon(pixels, width, square);
+            }
+        }
+
         public static void MarkPolygonVertices(UInt32[] pixels, int width, UInt32 color, int r, Polygon polygon)
         {
             foreach((int, int) point in polygon.Points)

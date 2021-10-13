@@ -22,8 +22,10 @@ namespace polygon_editor
         static UInt32 CANVAS_NORMAL_LINE_COLOR = 0xFF0000FF;
         static UInt32 CANVAS_ACTIVE_LINE_COLOR = 0xFF00BB00;
         static UInt32 CANVAS_ACTIVE_VERTEX_COLOR = 0xFFFF0000;
+        static UInt32 CANVAS_ACTIVE_EDGE_COLOR = 0xFF0000FF;
 
         static int CANVAS_ACTIVE_VERTEX_RADIUS = 5;
+        static int CANVAS_ACTIVE_EDGE_RADIUS = CANVAS_ACTIVE_VERTEX_RADIUS;
 
         UInt32[] CanvasData;
         int CanvasWidth;
@@ -35,12 +37,12 @@ namespace polygon_editor
         int TotalPolygonCount = 0;
         int TotalCircleCount = 0;
 
-        // TODO: Just use CurrentlyDrawnPolygon != null
-        bool IsDrawingPolygon = false;
-
-        Polygon CurrentlyDrawnPolygon;
         Polygon ActivePolygon;
+        int? CurrentlyDrawnVertex = null;
+        int? CurrentlyDrawnEdge = null;
+
         List<Polygon> Polygons;
+        Polygon CurrentlyDrawnPolygon;
 
         public MainWindow()
         {
@@ -81,7 +83,21 @@ namespace polygon_editor
 
             if(ActivePolygon != null)
             {
-                BitmapHelper.MarkPolygonVertices(CanvasData, CanvasWidth, CANVAS_ACTIVE_VERTEX_COLOR, CANVAS_ACTIVE_VERTEX_RADIUS, ActivePolygon);
+                BitmapHelper.MarkPolygonVertices(
+                    CanvasData,
+                    CanvasWidth,
+                    CANVAS_ACTIVE_VERTEX_COLOR,
+                    CANVAS_ACTIVE_VERTEX_RADIUS,
+                    ActivePolygon
+                );
+
+                BitmapHelper.MarkPolygonEdges(
+                    CanvasData,
+                    CanvasWidth,
+                    CANVAS_ACTIVE_EDGE_COLOR,
+                    CANVAS_ACTIVE_VERTEX_RADIUS,
+                    ActivePolygon
+                );
             }
 
             BitmapSource bitmap = BitmapSource.Create(
@@ -101,15 +117,13 @@ namespace polygon_editor
         private void ButtonDrawPolygon_Click(object sender, RoutedEventArgs e)
         {
             CanvasImage.Cursor = CANVAS_DRAW_CURSOR;
-            IsDrawingPolygon = true;
             CurrentlyDrawnPolygon = new Polygon();
             CurrentlyDrawnPolygon.Color = CANVAS_ACTIVE_LINE_COLOR;
 
             if(ActivePolygon != null)
             {
                 ActivePolygon.Color = CANVAS_NORMAL_LINE_COLOR;
-                ActivePolygon = null;
-                ShapeList.SelectedItems.Clear();
+                DeactivateShapes();
                 UpdateCanvasImage();
             }
         }
@@ -121,7 +135,7 @@ namespace polygon_editor
 
         private void CanvasImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if(IsDrawingPolygon)
+            if(CurrentlyDrawnPolygon != null)
             {
                 if(CurrentlyDrawnPolygon.Points.Length == 0)
                 {
@@ -138,44 +152,53 @@ namespace polygon_editor
 
                 UpdateCanvasImage();
             }
+            else if(CurrentlyDrawnVertex != null)
+            {
+                CurrentlyDrawnVertex = null;
+            }
+            else if(CurrentlyDrawnEdge != null)
+            {
+                CurrentlyDrawnEdge = null;
+            }
         }
 
         private void CanvasImage_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if(IsDrawingPolygon)
+            if(CurrentlyDrawnPolygon != null)
             {
                 StopDrawingPolygon();
             }
-
-            if(ActivePolygon != null)
+            else if(ActivePolygon != null && CurrentlyDrawnVertex == null)
             {
                 double mouseX = e.GetPosition(CanvasImage).X;
                 double mouseY = e.GetPosition(CanvasImage).Y;
-                for(int i = 0; i < ActivePolygon.Points.Length; ++i)
+                int? activeVertex = ActivePolygon.FindVertexWithinRadius(
+                    mouseX, mouseY, CANVAS_ACTIVE_VERTEX_RADIUS);
+                if (activeVertex == null)
                 {
-                    double x = (double)ActivePolygon.Points[i].Item1 - mouseX;
-                    double y = (double)ActivePolygon.Points[i].Item2 - mouseY;
-                    if(x * x + y * y < CANVAS_ACTIVE_VERTEX_RADIUS * CANVAS_ACTIVE_VERTEX_RADIUS)
-                    {
-                        ActivePolygon.RemoveNthPoint(i);
-                        if(ActivePolygon.Points.Length < 3)
-                        {
-                            Polygons.Remove(ActivePolygon);
-                            ShapeList.Items.RemoveAt(ShapeList.SelectedIndex);
-                            ShapeList.SelectedItems.Clear();
-                            ActivePolygon = null;
-                        }
-                        UpdateCanvasImage();
-                        return;
-                    }
+                    return;
                 }
+
+                ActivePolygon.RemoveNthPoint(activeVertex.Value);
+                if (ActivePolygon.Points.Length < 3)
+                {
+                    Polygons.Remove(ActivePolygon);
+                    ShapeList.Items.RemoveAt(ShapeList.SelectedIndex);
+                    DeactivateShapes();
+                }
+                UpdateCanvasImage();
             }
+        }
+
+        private void DeactivateShapes()
+        {
+            ShapeList.SelectedItems.Clear();
+            ActivePolygon = null;
         }
 
         private void StopDrawingPolygon()
         {
             CanvasImage.Cursor = CANVAS_NORMAL_CURSOR;
-            IsDrawingPolygon = false;
 
             if(CurrentlyDrawnPolygon.Points.Length >= 4)
             {
@@ -193,13 +216,31 @@ namespace polygon_editor
 
         private void CanvasImage_MouseMove(object sender, MouseEventArgs e)
         {
-            if(IsDrawingPolygon && CurrentlyDrawnPolygon.Points.Length > 0)
+            int mouseX = (int)e.GetPosition(CanvasImage).X;
+            int mouseY = (int)e.GetPosition(CanvasImage).Y;
+            if(CurrentlyDrawnPolygon != null && CurrentlyDrawnPolygon.Points.Length > 0)
             {
-                CurrentlyDrawnPolygon.Points[CurrentlyDrawnPolygon.Points.Length - 1] = (
-                    (int)e.GetPosition(CanvasImage).X,
-                    (int)e.GetPosition(CanvasImage).Y
-                );
-
+                CurrentlyDrawnPolygon.Points[CurrentlyDrawnPolygon.Points.Length - 1] = (mouseX, mouseY);
+                UpdateCanvasImage();
+            }
+            else if(CurrentlyDrawnVertex != null)
+            {
+                ActivePolygon.Points[CurrentlyDrawnVertex.Value] = (mouseX, mouseY);
+                UpdateCanvasImage();
+            }
+            else if(CurrentlyDrawnEdge != null)
+            {
+                (int, int) mid = ActivePolygon.EdgeMidpoint(CurrentlyDrawnEdge.Value);
+                int deltaX = mouseX - mid.Item1;
+                int deltaY = mouseY - mid.Item2;
+                int idx1 = CurrentlyDrawnEdge.Value;
+                int idx2 = CurrentlyDrawnEdge.Value == ActivePolygon.Points.Length - 1
+                    ? 0
+                    : CurrentlyDrawnEdge.Value + 1;
+                ActivePolygon.Points[idx1].Item1 += deltaX;
+                ActivePolygon.Points[idx1].Item2 += deltaY;
+                ActivePolygon.Points[idx2].Item1 += deltaX;
+                ActivePolygon.Points[idx2].Item2 += deltaY;
                 UpdateCanvasImage();
             }
         }
@@ -220,6 +261,46 @@ namespace polygon_editor
 
             ActivePolygon.Color = CANVAS_ACTIVE_LINE_COLOR;
             UpdateCanvasImage();
+        }
+
+        private void CanvasImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if(ActivePolygon != null)
+            {
+                double mouseX = e.GetPosition(CanvasImage).X;
+                double mouseY = e.GetPosition(CanvasImage).Y;
+                int? activeVertex = ActivePolygon.FindVertexWithinRadius(
+                    mouseX, mouseY, CANVAS_ACTIVE_VERTEX_RADIUS);
+
+                if(activeVertex != null)
+                {
+                    CurrentlyDrawnVertex = activeVertex.Value;
+                    return;
+                }
+
+                int? activeEdge = ActivePolygon.FindEdgeWithinSquareRadius(
+                    mouseX, mouseY, CANVAS_ACTIVE_EDGE_RADIUS);
+
+                if(activeEdge != null)
+                {
+                    CurrentlyDrawnEdge = activeEdge.Value;
+                    return;
+                }
+            }
+        }
+
+        private void CanvasImage_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if(e.ChangedButton == MouseButton.Middle && ActivePolygon != null)
+            {
+                double mouseX = e.GetPosition(CanvasImage).X;
+                double mouseY = e.GetPosition(CanvasImage).Y;
+                int? edge = ActivePolygon.FindEdgeWithinSquareRadius(mouseX, mouseY, CANVAS_ACTIVE_EDGE_RADIUS);
+                if (edge == null) return;
+                (int, int) midpoint = ActivePolygon.EdgeMidpoint(edge.Value);
+                ActivePolygon.InsertPointAt(midpoint.Item1, midpoint.Item2, edge.Value + 1);
+                UpdateCanvasImage();
+            }
         }
     }
 }

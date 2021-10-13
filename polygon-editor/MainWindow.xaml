@@ -17,7 +17,9 @@
             Height="384px"
             MouseMove="CanvasImage_MouseMove"
             MouseLeftButtonUp="CanvasImage_MouseLeftButtonUp"
+            MouseLeftButtonDown="CanvasImage_MouseLeftButtonDown"
             MouseRightButtonUp="CanvasImage_MouseRightButtonUp"
+            MouseDown="CanvasImage_MouseDown"
         />
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
