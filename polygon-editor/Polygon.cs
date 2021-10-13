@@ -66,6 +66,15 @@ namespace polygon_editor
             return null;
         }
 
+        public int EdgeLength(int n)
+        {
+            int idx1 = n;
+            int idx2 = n == Points.Length - 1 ? 0 : n + 1;
+            int x = Points[idx1].Item1 - Points[idx2].Item1;
+            int y = Points[idx1].Item2 - Points[idx2].Item2;
+            return (int)Math.Sqrt(x * x + y * y);
+        }
+
         public int? FindEdgeWithinSquareRadius(double x0, double y0, int radius)
         {
             for(int i = 0; i < Points.Length; ++i)
@@ -78,6 +87,27 @@ namespace polygon_editor
             }
 
             return null;
+        }
+
+        public (int, int) GetCenter()
+        {
+            int avgX = 0;
+            int avgY = 0;
+            int perimeter = 0;
+
+            for(int i = 0; i < Points.Length; ++i)
+            {
+                int len = EdgeLength(i);
+                (int, int) mid = EdgeMidpoint(i);
+                avgX += mid.Item1 * len;
+                avgY += mid.Item2 * len;
+                perimeter += len;
+            }
+
+            avgX /= perimeter;
+            avgY /= perimeter;
+
+            return (avgX, avgY);
         }
 
         public override string ToString()

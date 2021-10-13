@@ -45,17 +45,35 @@ namespace polygon_editor
             );
         }
 
+        public static void DrawCircle(UInt32[] pixels, int width, Circle circle)
+        {
+            BresenhamDrawer.Circle(
+                pixels,
+                circle.Color,
+                width,
+                circle.R,
+                circle.X,
+                circle.Y
+            );
+        }
+
+        private static Polygon CreateSquare(UInt32 color, int x, int y, int r)
+        {
+            Polygon square = new Polygon();
+            square.AddPoint(x + r, y + r);
+            square.AddPoint(x - r, y + r);
+            square.AddPoint(x - r, y - r);
+            square.AddPoint(x + r, y - r);
+            square.Color = color;
+            return square;
+        }
+
         public static void MarkPolygonEdges(UInt32[] pixels, int width, UInt32 color, int r, Polygon polygon)
         {
             for(int i = 0; i < polygon.Points.Length; ++i)
             {
-                Polygon square = new Polygon();
                 (int, int) mid = polygon.EdgeMidpoint(i);
-                square.AddPoint(mid.Item1 + r, mid.Item2 + r);
-                square.AddPoint(mid.Item1 - r, mid.Item2 + r);
-                square.AddPoint(mid.Item1 - r, mid.Item2 - r);
-                square.AddPoint(mid.Item1 + r, mid.Item2 - r);
-                square.Color = color;
+                Polygon square = CreateSquare(color, mid.Item1, mid.Item2, r);
                 DrawPolygon(pixels, width, square);
             }
         }
@@ -73,6 +91,31 @@ namespace polygon_editor
                     point.Item2
                 );
             }
+        }
+
+        public static void MarkPolygonCenter(UInt32[] pixels, int width, UInt32 color, int r, Polygon polygon)
+        {
+            (int, int) center = polygon.GetCenter();
+            Polygon square = CreateSquare(color, center.Item1, center.Item2, r);
+            DrawPolygon(pixels, width, square);
+        }
+
+        public static void MarkCircleCenter(UInt32[] pixels, int width, UInt32 color, int r, Circle circle)
+        {
+            Polygon square = CreateSquare(color, circle.X, circle.Y, r);
+            DrawPolygon(pixels, width, square);
+        }
+
+        public static void MarkCircleTop(UInt32[] pixels, int width, UInt32 color, int r, Circle circle)
+        {
+            BresenhamDrawer.Circle(
+                pixels,
+                color,
+                width,
+                r,
+                circle.X,
+                circle.Y - circle.R
+            );
         }
     }
 }

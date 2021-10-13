@@ -18,21 +18,22 @@ namespace polygon_editor
 
     public partial class MainWindow : Window
     {
-        static UInt32 CANVAS_BACKGROUND_COLOR = 0xFFE0E0E0;
-        static UInt32 CANVAS_NORMAL_LINE_COLOR = 0xFF0000FF;
-        static UInt32 CANVAS_ACTIVE_LINE_COLOR = 0xFF00BB00;
-        static UInt32 CANVAS_ACTIVE_VERTEX_COLOR = 0xFFFF0000;
-        static UInt32 CANVAS_ACTIVE_EDGE_COLOR = 0xFF0000FF;
+        static readonly UInt32 CANVAS_BACKGROUND_COLOR = 0xFFE0E0E0;
+        static readonly UInt32 CANVAS_NORMAL_LINE_COLOR = 0xFF0000FF;
+        static readonly UInt32 CANVAS_ACTIVE_LINE_COLOR = 0xFF00BB00;
+        static readonly UInt32 CANVAS_ACTIVE_VERTEX_COLOR = 0xFFFF0000;
+        static readonly UInt32 CANVAS_ACTIVE_EDGE_COLOR = 0xFF0000FF;
+        static readonly UInt32 CANVAS_ACTIVE_CENTER_COLOR = 0xFFFF00FF;
 
-        static int CANVAS_ACTIVE_VERTEX_RADIUS = 5;
-        static int CANVAS_ACTIVE_EDGE_RADIUS = CANVAS_ACTIVE_VERTEX_RADIUS;
+        static readonly int CANVAS_ACTIVE_VERTEX_RADIUS = 5;
+        static readonly int CANVAS_ACTIVE_EDGE_RADIUS = CANVAS_ACTIVE_VERTEX_RADIUS;
 
-        UInt32[] CanvasData;
-        int CanvasWidth;
-        int CanvasHeight;
+        readonly UInt32[] CanvasData;
+        readonly int CanvasWidth;
+        readonly int CanvasHeight;
 
-        static Cursor CANVAS_NORMAL_CURSOR = Cursors.Arrow;
-        static Cursor CANVAS_DRAW_CURSOR = Cursors.Cross;
+        static readonly Cursor CANVAS_NORMAL_CURSOR = Cursors.Arrow;
+        static readonly Cursor CANVAS_DRAW_CURSOR = Cursors.Cross;
 
         int TotalPolygonCount = 0;
         int TotalCircleCount = 0;
@@ -41,12 +42,21 @@ namespace polygon_editor
         int? CurrentlyDrawnVertex = null;
         int? CurrentlyDrawnEdge = null;
 
-        List<Polygon> Polygons;
+        bool IsMovingShape;
+        bool IsResizingCircle;
+
+        readonly List<Polygon> Polygons;
         Polygon CurrentlyDrawnPolygon;
+
+        readonly List<Circle> Circles;
+        Circle CurrentlyDrawnCircle;
+
+        Circle ActiveCircle;
 
         public MainWindow()
         {
             Polygons = new List<Polygon>();
+            Circles = new List<Circle>();
             InitializeComponent();
             CanvasWidth = (int)CanvasImage.Width;
             CanvasHeight = (int)CanvasImage.Height;
@@ -76,9 +86,19 @@ namespace polygon_editor
                 BitmapHelper.DrawIncompletePolygon(CanvasData, CanvasWidth, CurrentlyDrawnPolygon);
             }
 
+            if(CurrentlyDrawnCircle != null && CurrentlyDrawnCircle.R > 0)
+            {
+                BitmapHelper.DrawCircle(CanvasData, CanvasWidth, CurrentlyDrawnCircle);
+            }
+
             foreach(Polygon polygon in Polygons)
             {
                 BitmapHelper.DrawPolygon(CanvasData, CanvasWidth, polygon);
+            }
+
+            foreach(Circle circle in Circles)
+            {
+                BitmapHelper.DrawCircle(CanvasData, CanvasWidth, circle);
             }
 
             if(ActivePolygon != null)
@@ -97,6 +117,33 @@ namespace polygon_editor
                     CANVAS_ACTIVE_EDGE_COLOR,
                     CANVAS_ACTIVE_VERTEX_RADIUS,
                     ActivePolygon
+                );
+
+                BitmapHelper.MarkPolygonCenter(
+                    CanvasData,
+                    CanvasWidth,
+                    CANVAS_ACTIVE_CENTER_COLOR,
+                    CANVAS_ACTIVE_VERTEX_RADIUS,
+                    ActivePolygon
+                );
+            }
+
+            if(ActiveCircle != null)
+            {
+                BitmapHelper.MarkCircleCenter(
+                    CanvasData,
+                    CanvasWidth,
+                    CANVAS_ACTIVE_CENTER_COLOR,
+                    CANVAS_ACTIVE_VERTEX_RADIUS,
+                    ActiveCircle
+                );
+
+                BitmapHelper.MarkCircleTop(
+                    CanvasData,
+                    CanvasWidth,
+                    CANVAS_ACTIVE_EDGE_COLOR,
+                    CANVAS_ACTIVE_VERTEX_RADIUS,
+                    ActiveCircle
                 );
             }
 
@@ -117,40 +164,43 @@ namespace polygon_editor
         private void ButtonDrawPolygon_Click(object sender, RoutedEventArgs e)
         {
             CanvasImage.Cursor = CANVAS_DRAW_CURSOR;
-            CurrentlyDrawnPolygon = new Polygon();
-            CurrentlyDrawnPolygon.Color = CANVAS_ACTIVE_LINE_COLOR;
-
-            if(ActivePolygon != null)
+            CurrentlyDrawnPolygon = new Polygon
             {
-                ActivePolygon.Color = CANVAS_NORMAL_LINE_COLOR;
-                DeactivateShapes();
-                UpdateCanvasImage();
-            }
+                Color = CANVAS_ACTIVE_LINE_COLOR
+            };
+            if (IsAnyShapeActive()) DeactivateShapes();
         }
 
         private void ButtonDrawCircle_Click(object sender, RoutedEventArgs e)
         {
-
+            CanvasImage.Cursor = CANVAS_DRAW_CURSOR;
+            CurrentlyDrawnCircle = new Circle
+            {
+                Color = CANVAS_ACTIVE_LINE_COLOR,
+                R = -1
+            };
+            if (IsAnyShapeActive()) DeactivateShapes();
         }
 
         private void CanvasImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            int mouseX = (int)e.GetPosition(CanvasImage).X;
+            int mouseY = (int)e.GetPosition(CanvasImage).Y;
             if(CurrentlyDrawnPolygon != null)
             {
                 if(CurrentlyDrawnPolygon.Points.Length == 0)
                 {
-                    CurrentlyDrawnPolygon.AddPoint(
-                        (int)e.GetPosition(CanvasImage).X,
-                        (int)e.GetPosition(CanvasImage).Y
-                    );
+                    CurrentlyDrawnPolygon.AddPoint(mouseX, mouseY);
                 }
 
-                CurrentlyDrawnPolygon.AddPoint(
-                    (int)e.GetPosition(CanvasImage).X,
-                    (int)e.GetPosition(CanvasImage).Y
-                );
-
+                CurrentlyDrawnPolygon.AddPoint(mouseX, mouseY);
                 UpdateCanvasImage();
+            }
+            else if(CurrentlyDrawnCircle != null)
+            {
+                CurrentlyDrawnCircle.X = mouseX;
+                CurrentlyDrawnCircle.Y = mouseY;
+                CurrentlyDrawnCircle.R = 0;
             }
             else if(CurrentlyDrawnVertex != null)
             {
@@ -160,40 +210,92 @@ namespace polygon_editor
             {
                 CurrentlyDrawnEdge = null;
             }
+            else if(IsMovingShape)
+            {
+                IsMovingShape = false;
+            }
+            else if(ActiveCircle != null && IsResizingCircle)
+            {
+                IsResizingCircle = false;
+            }
         }
 
         private void CanvasImage_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if(CurrentlyDrawnPolygon != null)
+            double mouseX = e.GetPosition(CanvasImage).X;
+            double mouseY = e.GetPosition(CanvasImage).Y;
+            if(CurrentlyDrawnPolygon != null) StopDrawingPolygon();
+            else if(CurrentlyDrawnCircle != null)
             {
-                StopDrawingPolygon();
+                int x = CurrentlyDrawnCircle.X - (int)mouseX;
+                int y = CurrentlyDrawnCircle.Y - (int)mouseY;
+                CurrentlyDrawnCircle.R = (int)Math.Sqrt(x * x + y * y);
+                StopDrawingCircle();
             }
             else if(ActivePolygon != null && CurrentlyDrawnVertex == null)
             {
-                double mouseX = e.GetPosition(CanvasImage).X;
-                double mouseY = e.GetPosition(CanvasImage).Y;
                 int? activeVertex = ActivePolygon.FindVertexWithinRadius(
                     mouseX, mouseY, CANVAS_ACTIVE_VERTEX_RADIUS);
-                if (activeVertex == null)
+                if (activeVertex != null)
                 {
-                    return;
+                    ActivePolygon.RemoveNthPoint(activeVertex.Value);
+                    if (ActivePolygon.Points.Length < 3) RemoveActivePolygon();
+                    UpdateCanvasImage();
                 }
 
-                ActivePolygon.RemoveNthPoint(activeVertex.Value);
-                if (ActivePolygon.Points.Length < 3)
+                (int, int) center = ActivePolygon.GetCenter();
+                if (
+                    Math.Abs(center.Item1 - mouseX) <= CANVAS_ACTIVE_VERTEX_RADIUS &&
+                    Math.Abs(center.Item2 - mouseY) <= CANVAS_ACTIVE_VERTEX_RADIUS)
                 {
-                    Polygons.Remove(ActivePolygon);
-                    ShapeList.Items.RemoveAt(ShapeList.SelectedIndex);
-                    DeactivateShapes();
+                    RemoveActivePolygon();
+                    UpdateCanvasImage();
                 }
+            }
+            if(
+                ActiveCircle != null &&
+                Math.Abs(ActiveCircle.X - mouseX) <= CANVAS_ACTIVE_VERTEX_RADIUS &&
+                Math.Abs(ActiveCircle.Y - mouseY) <= CANVAS_ACTIVE_VERTEX_RADIUS)
+            {
+                Circles.Remove(ActiveCircle);
+                ShapeList.Items.RemoveAt(ShapeList.SelectedIndex);
+                DeactivateShapes();
                 UpdateCanvasImage();
             }
+        }
+
+        private void RemoveActivePolygon()
+        {
+            Polygons.Remove(ActivePolygon);
+            ShapeList.Items.RemoveAt(ShapeList.SelectedIndex);
+            DeactivateShapes();
+        }
+
+        private bool IsAnyShapeActive()
+        {
+            return ActivePolygon != null || ActiveCircle != null;
+        }
+
+        private void DeactivateShapesWithoutCleaningList()
+        {
+            if(ActivePolygon != null)
+            {
+                ActivePolygon.Color = CANVAS_NORMAL_LINE_COLOR;
+                ActivePolygon = null;
+            }
+            else if(ActiveCircle != null)
+            {
+                ActiveCircle.Color = CANVAS_NORMAL_LINE_COLOR;
+                ActiveCircle = null;
+            }
+
+            UpdateCanvasImage();
         }
 
         private void DeactivateShapes()
         {
             ShapeList.SelectedItems.Clear();
-            ActivePolygon = null;
+            DeactivateShapesWithoutCleaningList();
         }
 
         private void StopDrawingPolygon()
@@ -213,6 +315,17 @@ namespace polygon_editor
             CurrentlyDrawnPolygon = null;
             UpdateCanvasImage();
         }
+        private void StopDrawingCircle()
+        {
+            CanvasImage.Cursor = CANVAS_NORMAL_CURSOR;
+            Circles.Add(CurrentlyDrawnCircle);
+            TotalCircleCount += 1;
+            CurrentlyDrawnCircle.Index = TotalCircleCount;
+            CurrentlyDrawnCircle.Color = CANVAS_NORMAL_LINE_COLOR;
+            ShapeList.Items.Add(CurrentlyDrawnCircle);
+            CurrentlyDrawnCircle = null;
+            UpdateCanvasImage();
+        }
 
         private void CanvasImage_MouseMove(object sender, MouseEventArgs e)
         {
@@ -221,6 +334,13 @@ namespace polygon_editor
             if(CurrentlyDrawnPolygon != null && CurrentlyDrawnPolygon.Points.Length > 0)
             {
                 CurrentlyDrawnPolygon.Points[CurrentlyDrawnPolygon.Points.Length - 1] = (mouseX, mouseY);
+                UpdateCanvasImage();
+            }
+            else if(CurrentlyDrawnCircle != null && CurrentlyDrawnCircle.R != -1)
+            {
+                int x = mouseX - CurrentlyDrawnCircle.X;
+                int y = mouseY - CurrentlyDrawnCircle.Y;
+                CurrentlyDrawnCircle.R = (int)Math.Sqrt(x * x + y * y);
                 UpdateCanvasImage();
             }
             else if(CurrentlyDrawnVertex != null)
@@ -243,32 +363,68 @@ namespace polygon_editor
                 ActivePolygon.Points[idx2].Item2 += deltaY;
                 UpdateCanvasImage();
             }
+            else if(IsMovingShape)
+            {
+                if(ActivePolygon != null)
+                {
+                    (int, int) center = ActivePolygon.GetCenter();
+                    int deltaX = mouseX - center.Item1;
+                    int deltaY = mouseY - center.Item2;
+                    for(int i = 0; i < ActivePolygon.Points.Length; ++i)
+                    {
+                        ActivePolygon.Points[i].Item1 += deltaX;
+                        ActivePolygon.Points[i].Item2 += deltaY;
+                    }
+                }
+                else if(ActiveCircle != null)
+                {
+                    ActiveCircle.X = mouseX;
+                    ActiveCircle.Y = mouseY;
+                }
+                UpdateCanvasImage();
+            }
+            else if(ActiveCircle != null && IsResizingCircle)
+            {
+                ActiveCircle.R = Math.Abs(ActiveCircle.Y - mouseY);
+                UpdateCanvasImage();
+            }
         }
 
         private void ShapeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(ActivePolygon != null)
+            if (IsAnyShapeActive()) DeactivateShapesWithoutCleaningList();
+
+            if(ShapeList.SelectedItem is Polygon)
             {
-                ActivePolygon.Color = CANVAS_NORMAL_LINE_COLOR;
+                ActivePolygon = ShapeList.SelectedItem as Polygon;
+                if(ActivePolygon == null) return;
+                ActivePolygon.Color = CANVAS_ACTIVE_LINE_COLOR;
+            }
+            else if(ShapeList.SelectedItem is Circle)
+            {
+                ActiveCircle = ShapeList.SelectedItem as Circle;
+                if(ActiveCircle == null) return;
+                ActiveCircle.Color = CANVAS_ACTIVE_LINE_COLOR;
             }
 
-            ActivePolygon = ShapeList.SelectedItem as Polygon;
-
-            if(ActivePolygon == null)
-            {
-                return;
-            }
-
-            ActivePolygon.Color = CANVAS_ACTIVE_LINE_COLOR;
             UpdateCanvasImage();
         }
 
         private void CanvasImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if(ActivePolygon != null)
+            if (ActivePolygon != null)
             {
                 double mouseX = e.GetPosition(CanvasImage).X;
                 double mouseY = e.GetPosition(CanvasImage).Y;
+                (int, int) center = ActivePolygon.GetCenter();
+                if(
+                    Math.Abs(center.Item1 - mouseX) <= CANVAS_ACTIVE_VERTEX_RADIUS &&
+                    Math.Abs(center.Item2 - mouseY) <= CANVAS_ACTIVE_VERTEX_RADIUS)
+                {
+                    IsMovingShape = true;
+                    return;
+                }
+
                 int? activeVertex = ActivePolygon.FindVertexWithinRadius(
                     mouseX, mouseY, CANVAS_ACTIVE_VERTEX_RADIUS);
 
@@ -284,6 +440,26 @@ namespace polygon_editor
                 if(activeEdge != null)
                 {
                     CurrentlyDrawnEdge = activeEdge.Value;
+                    return;
+                }
+            }
+            else if(ActiveCircle != null)
+            {
+                double mouseX = e.GetPosition(CanvasImage).X;
+                double mouseY = e.GetPosition(CanvasImage).Y;
+                if(
+                    Math.Abs(ActiveCircle.X - mouseX) <= CANVAS_ACTIVE_VERTEX_RADIUS &&
+                    Math.Abs(ActiveCircle.Y - mouseY) <= CANVAS_ACTIVE_VERTEX_RADIUS)
+                {
+                    IsMovingShape = true;
+                    return;
+                }
+
+                int x = ActiveCircle.X - (int)mouseX;
+                int y = ActiveCircle.Y - ActiveCircle.R - (int)mouseY;
+                if(Math.Sqrt(x * x + y * y) <= CANVAS_ACTIVE_VERTEX_RADIUS)
+                {
+                    IsResizingCircle = true;
                     return;
                 }
             }
