@@ -30,5 +30,9 @@ namespace polygon_editor{
         public override void OnMouseLeftButtonUp(MouseButtonEventArgs e) {
             State.SetControlState(new ActivePolygonControlState(State, MovedPolygon));
         }
+
+        public override void ExitState() {
+            MovedPolygon.Color = CanvasOptions.NORMAL_LINE_COLOR;
+        }
     }
 }

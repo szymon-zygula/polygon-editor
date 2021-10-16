@@ -6,9 +6,9 @@ namespace polygon_editor {
     class DrawingCircleControlState : CanvasControlState {
         static readonly int CIRCLE_RADIUS_NOT_SET = -1;
 
-        Circle CurrentlyDrawnCircle;
+        Circle DrawnCircle;
         public DrawingCircleControlState(CanvasState state) : base(state) {
-            CurrentlyDrawnCircle = new Circle {
+            DrawnCircle = new Circle {
                 Color = CanvasOptions.ACTIVE_LINE_COLOR,
                 R = CIRCLE_RADIUS_NOT_SET
             };
@@ -19,9 +19,9 @@ namespace polygon_editor {
         }
 
         public override void OnMouseLeftButtonUp(MouseButtonEventArgs e) {
-            CurrentlyDrawnCircle.X = (int)e.GetPosition(State.Canvas).X;
-            CurrentlyDrawnCircle.Y = (int)e.GetPosition(State.Canvas).Y;
-            CurrentlyDrawnCircle.R = 0;
+            DrawnCircle.X = (int)e.GetPosition(State.Canvas).X;
+            DrawnCircle.Y = (int)e.GetPosition(State.Canvas).Y;
+            DrawnCircle.R = 0;
         }
 
         public override void OnMouseRightButtonUp(MouseButtonEventArgs e) {
@@ -29,23 +29,23 @@ namespace polygon_editor {
         }
 
         public override void OnMouseMove(MouseEventArgs e) {
-            if (CurrentlyDrawnCircle.R == CIRCLE_RADIUS_NOT_SET) return;
-            int x = (int)e.GetPosition(State.Canvas).X - CurrentlyDrawnCircle.X;
-            int y = (int)e.GetPosition(State.Canvas).Y - CurrentlyDrawnCircle.Y;
-            CurrentlyDrawnCircle.R = (int)Math.Sqrt(x * x + y * y);
+            if (DrawnCircle.R == CIRCLE_RADIUS_NOT_SET) return;
+            int x = (int)e.GetPosition(State.Canvas).X - DrawnCircle.X;
+            int y = (int)e.GetPosition(State.Canvas).Y - DrawnCircle.Y;
+            DrawnCircle.R = (int)Math.Sqrt(x * x + y * y);
             State.UpdateCanvas();
         }
 
         public override void DrawStateFeatures() {
-            if (CurrentlyDrawnCircle.R == CIRCLE_RADIUS_NOT_SET) return;
-            State.Plane.DrawCircle(CurrentlyDrawnCircle);
+            if (DrawnCircle.R == CIRCLE_RADIUS_NOT_SET) return;
+            State.Plane.DrawCircle(DrawnCircle);
         }
 
         public override void ExitState() {
             State.Canvas.Cursor = CanvasOptions.NORMAL_CURSOR;
-            if (CurrentlyDrawnCircle.R == CIRCLE_RADIUS_NOT_SET) return;
-            CurrentlyDrawnCircle.Color = CanvasOptions.NORMAL_LINE_COLOR;
-            State.AddCircle(CurrentlyDrawnCircle);
+            if (DrawnCircle.R == CIRCLE_RADIUS_NOT_SET) return;
+            DrawnCircle.Color = CanvasOptions.NORMAL_LINE_COLOR;
+            State.AddCircle(DrawnCircle);
             State.UpdateCanvas();
         }
     }

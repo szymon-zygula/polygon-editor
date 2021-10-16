@@ -29,5 +29,9 @@ namespace polygon_editor {
                 (int)e.GetPosition(State.Canvas).Y);
             State.UpdateCanvas();
         }
+
+        public override void ExitState() {
+            ActivePolygon.Color = CanvasOptions.NORMAL_LINE_COLOR;
+        }
     }
 }

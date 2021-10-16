@@ -24,5 +24,9 @@ namespace polygon_editor {
         public override void OnMouseLeftButtonUp(MouseButtonEventArgs e) {
             State.SetControlState(new ActiveCircleControlState(State, ResizedCircle));
         }
+
+        public override void ExitState() {
+            ResizedCircle.Color = CanvasOptions.NORMAL_LINE_COLOR;
+        }
     }
 }

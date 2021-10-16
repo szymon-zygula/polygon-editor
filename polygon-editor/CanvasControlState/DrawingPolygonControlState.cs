@@ -9,9 +9,9 @@ using System.Windows.Input;
 
 namespace polygon_editor {
     class DrawingPolygonControlState : CanvasControlState {
-        Polygon CurrentlyDrawnPolygon;
+        Polygon DrawnPolygon;
         public DrawingPolygonControlState(CanvasState state) : base(state) {
-            CurrentlyDrawnPolygon = new Polygon {
+            DrawnPolygon = new Polygon {
                 Color = CanvasOptions.ACTIVE_LINE_COLOR
             };
         }
@@ -24,11 +24,11 @@ namespace polygon_editor {
             int mouseX = (int)e.GetPosition(State.Canvas).X;
             int mouseY = (int)e.GetPosition(State.Canvas).Y;
 
-            if (CurrentlyDrawnPolygon.Points.Length == 0) {
-                CurrentlyDrawnPolygon.AddPoint(mouseX, mouseY);
+            if (DrawnPolygon.Points.Length == 0) {
+                DrawnPolygon.AddPoint(mouseX, mouseY);
             }
 
-            CurrentlyDrawnPolygon.AddPoint(mouseX, mouseY);
+            DrawnPolygon.AddPoint(mouseX, mouseY);
             State.UpdateCanvas();
         }
 
@@ -37,24 +37,24 @@ namespace polygon_editor {
         }
 
         public override void OnMouseMove(MouseEventArgs e) {
-            if (CurrentlyDrawnPolygon.Points.Length == 0) return;
-            CurrentlyDrawnPolygon.Points[CurrentlyDrawnPolygon.Points.Length - 1] = (
+            if (DrawnPolygon.Points.Length == 0) return;
+            DrawnPolygon.Points[DrawnPolygon.Points.Length - 1] = (
                 (int)e.GetPosition(State.Canvas).X, (int)e.GetPosition(State.Canvas).Y
             );
             State.UpdateCanvas();
         }
 
         public override void DrawStateFeatures() {
-            State.Plane.DrawIncompletePolygon(CurrentlyDrawnPolygon);
+            State.Plane.DrawIncompletePolygon(DrawnPolygon);
         }
 
         public override void ExitState() {
             State.Canvas.Cursor = CanvasOptions.NORMAL_CURSOR;
 
-            if (CurrentlyDrawnPolygon.Points.Length >= 4) {
-                CurrentlyDrawnPolygon.Color = CanvasOptions.NORMAL_LINE_COLOR;
-                CurrentlyDrawnPolygon.RemoveLastPoint();
-                State.AddPolygon(CurrentlyDrawnPolygon);
+            if (DrawnPolygon.Points.Length >= 4) {
+                DrawnPolygon.Color = CanvasOptions.NORMAL_LINE_COLOR;
+                DrawnPolygon.RemoveLastPoint();
+                State.AddPolygon(DrawnPolygon);
             }
 
             State.UpdateCanvas();
