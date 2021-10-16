@@ -63,7 +63,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BitmapHelper.cs" />
+    <Compile Include="DrawingPlane.cs" />
     <Compile Include="BresenhamDrawer.cs" />
     <Compile Include="Circle.cs" />
     <Compile Include="MainWindow.xaml.cs">
