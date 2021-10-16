@@ -19,7 +19,11 @@ namespace polygon_editor {
         }
 
         public void SetPixel(int x, int y, UInt32 color) {
+            if(x < 0 || x >= Width || y < 0 || y >= Height) {
+                return;
+            }
 
+            Pixels[x + y * Width] = color;
         }
 
         public void Fill(UInt32 color) {
@@ -33,9 +37,8 @@ namespace polygon_editor {
         public void DrawIncompletePolygon(Polygon polygon) {
             for (int i = 1; i < polygon.Points.Length; ++i) {
                 BresenhamDrawer.Line(
-                    Pixels,
+                    this,
                     polygon.Color,
-                    Width,
                     polygon.Points[i - 1].Item1, polygon.Points[i - 1].Item2,
                     polygon.Points[i].Item1, polygon.Points[i].Item2
                 );
@@ -45,9 +48,8 @@ namespace polygon_editor {
         public void DrawPolygon(Polygon polygon) {
             DrawIncompletePolygon(polygon);
             BresenhamDrawer.Line(
-                Pixels,
+                this,
                 polygon.Color,
-                Width,
                 polygon.Points.Last().Item1, polygon.Points.Last().Item2,
                 polygon.Points.First().Item1, polygon.Points.First().Item2
             );
@@ -55,9 +57,8 @@ namespace polygon_editor {
 
         public void DrawCircle(Circle circle) {
             BresenhamDrawer.Circle(
-                Pixels,
+                this,
                 circle.Color,
-                Width,
                 circle.R,
                 circle.X,
                 circle.Y
@@ -85,9 +86,8 @@ namespace polygon_editor {
         public void MarkPolygonVertices(UInt32 color, int r, Polygon polygon) {
             foreach ((int, int) point in polygon.Points) {
                 BresenhamDrawer.Circle(
-                    Pixels,
+                    this,
                     color,
-                    Width,
                     r,
                     point.Item1,
                     point.Item2
@@ -108,9 +108,8 @@ namespace polygon_editor {
 
         public void MarkCircleTop(UInt32 color, int r, Circle circle) {
             BresenhamDrawer.Circle(
-                Pixels,
+                this,
                 color,
-                Width,
                 r,
                 circle.X,
                 circle.Y - circle.R
