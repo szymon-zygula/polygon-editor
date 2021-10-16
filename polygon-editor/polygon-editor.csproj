@@ -63,6 +63,19 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CanvasControlState\ActiveCircleControlState.cs" />
+    <Compile Include="CanvasControlState\ActivePolygonControlState.cs" />
+    <Compile Include="CanvasControlState\CanvasControlState.cs" />
+    <Compile Include="CanvasControlState\DoingNothingControlState.cs" />
+    <Compile Include="CanvasControlState\DrawingCircleControlState.cs" />
+    <Compile Include="CanvasControlState\DrawingPolygonControlState.cs" />
+    <Compile Include="CanvasControlState\MovingEdgeControlState.cs" />
+    <Compile Include="CanvasControlState\MovingCircleControlState.cs" />
+    <Compile Include="CanvasControlState\MovingPolygonControlState.cs" />
+    <Compile Include="CanvasControlState\MovingVertexControlState.cs" />
+    <Compile Include="CanvasControlState\ResizingCircleControlState.cs" />
+    <Compile Include="CanvasOptions.cs" />
+    <Compile Include="CanvasState.cs" />
     <Compile Include="DrawingPlane.cs" />
     <Compile Include="BresenhamDrawer.cs" />
     <Compile Include="Circle.cs" />
