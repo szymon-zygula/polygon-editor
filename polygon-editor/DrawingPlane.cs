@@ -77,10 +77,14 @@ namespace polygon_editor {
 
         public void MarkPolygonEdges(UInt32 color, int r, Polygon polygon) {
             for (int i = 0; i < polygon.Points.Length; ++i) {
-                (int, int) mid = polygon.EdgeMidpoint(i);
-                Polygon square = CreateSquare(color, mid.Item1, mid.Item2, r);
-                DrawPolygon(square);
+                MarkPolygonEdge(color, r, polygon, i);
             }
+        }
+
+        public void MarkPolygonEdge(UInt32 color, int r, Polygon polygon, int edge) {
+            (int, int) mid = polygon.EdgeMidpoint(edge);
+            Polygon square = CreateSquare(color, mid.Item1, mid.Item2, r);
+            DrawPolygon(square);
         }
 
         public void MarkPolygonVertices(UInt32 color, int r, Polygon polygon) {

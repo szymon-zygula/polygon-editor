@@ -37,19 +37,6 @@ namespace polygon_editor {
             State.ControlState.OnMouseMove(e);
         }
 
-        private void ShapeList_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-            if (ShapeList.SelectedItem is Polygon) {
-                Polygon polygon = ShapeList.SelectedItem as Polygon;
-                State.SetControlState(new ActivePolygonControlState(State, polygon));
-            }
-            else if (ShapeList.SelectedItem is Circle) {
-                Circle circle = ShapeList.SelectedItem as Circle;
-                State.SetControlState(new ActiveCircleControlState(State, circle));
-            }
-
-            State.UpdateCanvas();
-        }
-
         private void CanvasImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
             State.ControlState.OnMouseLeftButtonDown(e);
         }
@@ -58,6 +45,42 @@ namespace polygon_editor {
             if (e.ChangedButton == MouseButton.Middle) {
                 State.ControlState.OnMouseMiddleButtonDown(e);
             }
+        }
+
+        private void ShapeList_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            if (ShapeList.SelectedItem is Polygon) {
+                Polygon polygon = ShapeList.SelectedItem as Polygon;
+                State.SetControlState(new ActivePolygonControlState(State, polygon));
+                State.UpdateCanvas();
+            }
+            else if (ShapeList.SelectedItem is Circle) {
+                Circle circle = ShapeList.SelectedItem as Circle;
+                State.SetControlState(new ActiveCircleControlState(State, circle));
+                State.UpdateCanvas();
+            }
+
+            ShapeList.SelectedItem = null;
+        }
+
+        private void ButtonSegLenConstr_Click(object sender, RoutedEventArgs e) {
+
+            State.SetControlState(new SegmentLenConstrControlState(State));
+        }
+
+        private void ButtonCircRadConstr_Click(object sender, RoutedEventArgs e) {
+            State.SetControlState(new CircleRadiusConstrControlState(State));
+        }
+
+        private void ButtonTwoSegLen_Click(object sender, RoutedEventArgs e) {
+            State.SetControlState(new TwoSegmentsEqLenConstrControlState(State));
+        }
+
+        private void ButtonCirSegTang_Click(object sender, RoutedEventArgs e) {
+            State.SetControlState(new TangentSegCirConstrControlState(State));
+        }
+
+        private void ButtonSegPerpen_Click(object sender, RoutedEventArgs e) {
+            State.SetControlState(new SegmentPerpenConstrControlState(State));
         }
     }
 }

@@ -63,17 +63,23 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CanvasControlState\ActiveCircleControlState.cs" />
-    <Compile Include="CanvasControlState\ActivePolygonControlState.cs" />
-    <Compile Include="CanvasControlState\CanvasControlState.cs" />
-    <Compile Include="CanvasControlState\DoingNothingControlState.cs" />
-    <Compile Include="CanvasControlState\DrawingCircleControlState.cs" />
-    <Compile Include="CanvasControlState\DrawingPolygonControlState.cs" />
-    <Compile Include="CanvasControlState\MovingEdgeControlState.cs" />
-    <Compile Include="CanvasControlState\MovingCircleControlState.cs" />
-    <Compile Include="CanvasControlState\MovingPolygonControlState.cs" />
-    <Compile Include="CanvasControlState\MovingVertexControlState.cs" />
-    <Compile Include="CanvasControlState\ResizingCircleControlState.cs" />
+    <Compile Include="CanvasControlStates\ActiveShapeControlStates\ActiveCircleControlState.cs" />
+    <Compile Include="CanvasControlStates\ActiveShapeControlStates\ActivePolygonControlState.cs" />
+    <Compile Include="CanvasControlStates\ConstraintControlStates\CircleRadiusConstrControlState.cs" />
+    <Compile Include="CanvasControlStates\ConstraintControlStates\SegmentLenConstrControlState.cs" />
+    <Compile Include="CanvasControlStates\CanvasControlState.cs" />
+    <Compile Include="CanvasControlStates\ConstraintControlStates\SegmentPerpenConstrControlState.cs" />
+    <Compile Include="CanvasControlStates\ConstraintControlStates\TangentSegCirConstrControlState.cs" />
+    <Compile Include="CanvasControlStates\ConstraintControlStates\TwoSegmentSelectionConstrControlState.cs" />
+    <Compile Include="CanvasControlStates\ConstraintControlStates\TwoSegmentsEqLenConstrControlState.cs" />
+    <Compile Include="CanvasControlStates\DoingNothingControlState.cs" />
+    <Compile Include="CanvasControlStates\DrawingControlStates\DrawingCircleControlState.cs" />
+    <Compile Include="CanvasControlStates\DrawingControlStates\DrawingPolygonControlState.cs" />
+    <Compile Include="CanvasControlStates\ModificationControlStates\MovingEdgeControlState.cs" />
+    <Compile Include="CanvasControlStates\ModificationControlStates\MovingCircleControlState.cs" />
+    <Compile Include="CanvasControlStates\ModificationControlStates\MovingPolygonControlState.cs" />
+    <Compile Include="CanvasControlStates\ModificationControlStates\MovingVertexControlState.cs" />
+    <Compile Include="CanvasControlStates\ModificationControlStates\ResizingCircleControlState.cs" />
     <Compile Include="CanvasOptions.cs" />
     <Compile Include="CanvasState.cs" />
     <Compile Include="DrawingPlane.cs" />
@@ -110,6 +116,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Constraints\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

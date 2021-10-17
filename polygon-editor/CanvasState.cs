@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows.Controls;
 
 namespace polygon_editor {
@@ -13,8 +14,6 @@ namespace polygon_editor {
 
         public List<Polygon> Polygons { get; }
         public List<Circle> Circles { get; }
-        public Circle ActiveCircle { get; }
-        public Polygon ActivePolygon { get; }
 
         public CanvasControlState ControlState { get; private set; }
 
@@ -30,6 +29,37 @@ namespace polygon_editor {
 
             Plane.Fill(CanvasOptions.BACKGROUND_COLOR);
             Canvas.Source = Plane.CreateBitmapSource();
+        }
+
+        public (int?, Polygon) FindAnyEdgeWithinMouse(double mouseX, double mouseY) {
+            int? activeEdge = null;
+            Polygon activePolygon = null;
+            foreach(Polygon polygon in Polygons) {
+                activePolygon = polygon;
+                activeEdge = polygon.FindEdgeWithinSquareRadius(
+                    mouseX, mouseY,
+                    CanvasOptions.ACTIVE_EDGE_RADIUS
+                );
+                if (activeEdge != null) break;
+            }
+
+            return (activeEdge, activePolygon);
+        }
+
+        public Circle FindAnyCircleCenterWithinMouse(double mouseX, double mouseY) {
+            foreach(Circle circle in Circles) {
+                if (IsWithinCircleCenterMouse(circle, mouseX, mouseY)) {
+                    return circle;
+                }
+            }
+
+            return null;
+        }
+
+        public bool IsWithinCircleCenterMouse(Circle circle, double mouseX, double mouseY) {
+            bool isWithinXRange = Math.Abs(circle.X - mouseX) <= CanvasOptions.ACTIVE_VERTEX_RADIUS;
+            bool isWithinYRange = Math.Abs(circle.Y - mouseY) <= CanvasOptions.ACTIVE_VERTEX_RADIUS;
+            return isWithinXRange && isWithinYRange;
         }
 
         public void AddPolygon(Polygon polygon) {

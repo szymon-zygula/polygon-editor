@@ -67,7 +67,7 @@ namespace polygon_editor{
 
         private void RemoveActivePolygon() {
             State.Polygons.Remove(ActivePolygon);
-            State.ShapeList.Items.RemoveAt(State.ShapeList.SelectedIndex);
+            State.ShapeList.Items.Remove(ActivePolygon);
             State.SetControlState(new DoingNothingControlState(State));
         }
 

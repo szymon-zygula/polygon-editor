@@ -13,8 +13,8 @@
         </Grid.ColumnDefinitions>
         <Image
             Name="Canvas"
-            Width="512px"
-            Height="384px"
+            Width="576px"
+            Height="401px"
             MouseMove="CanvasImage_MouseMove"
             MouseLeftButtonUp="CanvasImage_MouseLeftButtonUp"
             MouseLeftButtonDown="CanvasImage_MouseLeftButtonDown"
@@ -25,7 +25,12 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="30px" />
                 <RowDefinition Height="30px" />
-                <RowDefinition />
+                <RowDefinition Height="200px" />
+                <RowDefinition Height="30px" />
+                <RowDefinition Height="30px" />
+                <RowDefinition Height="30px" />
+                <RowDefinition Height="30px" />
+                <RowDefinition Height="30px" />
             </Grid.RowDefinitions>
             <Button
                 Grid.Row="0"
@@ -44,7 +49,43 @@
             <ListView
                 Name="ShapeList"
                 Grid.Row="2"
+                Margin="5px"
                 SelectionChanged="ShapeList_SelectionChanged"
+            />
+            <Button
+                Grid.Row="3"
+                Margin="5px"
+                Name="ButtonSegLenConstr"
+                Content="Segment length"
+                Click="ButtonSegLenConstr_Click"
+            />
+            <Button
+                Grid.Row="4"
+                Margin="5px"
+                Name="ButtonCircRadConstr"
+                Content="Circle radius"
+                Click="ButtonCircRadConstr_Click"
+            />
+            <Button
+                Grid.Row="5"
+                Margin="5px"
+                Name="ButtonTwoSegLen"
+                Content="Segments equal length"
+                Click="ButtonTwoSegLen_Click"
+            />
+            <Button
+                Grid.Row="6"
+                Margin="5px"
+                Name="ButtonCirSegTang"
+                Content="Segment circle tangent"
+                Click="ButtonCirSegTang_Click"
+            />
+            <Button
+                Grid.Row="7"
+                Margin="5px"
+                Name="ButtonSegPerpen"
+                Content="Two segments perpendicular"
+                Click="ButtonSegPerpen_Click"
             />
         </Grid>
     </Grid>

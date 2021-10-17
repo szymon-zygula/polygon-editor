@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace polygon_editor {
-    class ActiveCircleControlState : CanvasControlState {
+    public class ActiveCircleControlState : CanvasControlState {
         Circle ActiveCircle;
         public ActiveCircleControlState(CanvasState state, Circle circle) : base(state) {
             ActiveCircle = circle;
@@ -24,9 +24,7 @@ namespace polygon_editor {
         }
 
         private bool TryEnterMovingCircleState(double mouseX, double mouseY) {
-            bool isWithinXRange = Math.Abs(ActiveCircle.X - mouseX) <= CanvasOptions.ACTIVE_VERTEX_RADIUS;
-            bool isWithinYRange = Math.Abs(ActiveCircle.Y - mouseY) <= CanvasOptions.ACTIVE_VERTEX_RADIUS;
-            if (!isWithinXRange || !isWithinYRange) return false;
+            if (!State.IsWithinCircleCenterMouse(ActiveCircle, mouseX, mouseY)) return false;
             State.SetControlState(new MovingCircleControlState(State, ActiveCircle));
             return true;
         }
@@ -55,7 +53,7 @@ namespace polygon_editor {
 
         private void RemoveActiveCircle() {
             State.Circles.Remove(ActiveCircle);
-            State.ShapeList.Items.RemoveAt(State.ShapeList.SelectedIndex);
+            State.ShapeList.Items.Remove(ActiveCircle);
             State.SetControlState(new DoingNothingControlState(State));
             State.UpdateCanvas();
         }
