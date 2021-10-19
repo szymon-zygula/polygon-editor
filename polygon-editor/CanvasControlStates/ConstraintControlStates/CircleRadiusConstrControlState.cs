@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows;
 
 namespace polygon_editor {
     class CircleRadiusConstrControlState : CanvasControlState {
@@ -20,6 +21,10 @@ namespace polygon_editor {
                 e.GetPosition(State.Canvas).X, e.GetPosition(State.Canvas).Y
             );
             if (activeCircle == null) return;
+            int newRadius = State.GetConstraintParam();
+            if (newRadius == 0) return;
+            activeCircle.Constraint = new ConstrantRadiusConstraint(activeCircle, newRadius);
+            activeCircle.Constraint.ForceConstraint();
             State.SetControlState(new DoingNothingControlState(State));
         }
 

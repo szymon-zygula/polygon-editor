@@ -14,7 +14,7 @@ namespace polygon_editor {
 
         public MainWindow() {
             InitializeComponent();
-            State = new CanvasState(Canvas, ShapeList);
+            State = new CanvasState(Canvas, ShapeList, TextBoxConstraintParameter);
         }
 
         private void ButtonDrawPolygon_Click(object sender, RoutedEventArgs e) {

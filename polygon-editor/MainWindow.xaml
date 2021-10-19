@@ -25,7 +25,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="30px" />
                 <RowDefinition Height="30px" />
-                <RowDefinition Height="200px" />
+                <RowDefinition Height="170px" />
+                <RowDefinition Height="30px" />
                 <RowDefinition Height="30px" />
                 <RowDefinition Height="30px" />
                 <RowDefinition Height="30px" />
@@ -87,6 +88,23 @@
                 Content="Two segments perpendicular"
                 Click="ButtonSegPerpen_Click"
             />
+            <Grid
+                Grid.Row="8"
+            >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Label
+                    Grid.Column="0"
+                    Content="Contsr. param."
+                />
+                <TextBox
+                    Grid.Column="1"
+                    Margin="5px"
+                    Name="TextBoxConstraintParameter"
+                />
+            </Grid>
         </Grid>
     </Grid>
 </Window>

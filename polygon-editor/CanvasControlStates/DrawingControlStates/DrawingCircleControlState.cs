@@ -22,6 +22,7 @@ namespace polygon_editor {
             DrawnCircle.X = (int)e.GetPosition(State.Canvas).X;
             DrawnCircle.Y = (int)e.GetPosition(State.Canvas).Y;
             DrawnCircle.R = 0;
+            State.UpdateCanvas();
         }
 
         public override void OnMouseRightButtonUp(MouseButtonEventArgs e) {

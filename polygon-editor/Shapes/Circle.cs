@@ -10,6 +10,7 @@ namespace polygon_editor {
         public int Y { get; set; }
         public int R { get; set; }
         public UInt32 Color { get; set; }
+        public Constraint Constraint;
 
         public Circle() {
 
@@ -21,6 +22,11 @@ namespace polygon_editor {
 
         public override void DrawOn(DrawingPlane plane) {
             BresenhamDrawer.Circle(plane, Color, R, X, Y);
+            if (Constraint != null) Constraint.DrawIcons(plane);
+        }
+
+        public void ForceConstraintWithInvariant() {
+            if (Constraint != null) Constraint.ForceConstraintWithInvariant(this, null);
         }
     }
 }

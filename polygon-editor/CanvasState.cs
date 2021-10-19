@@ -8,6 +8,7 @@ namespace polygon_editor {
 
         public Image Canvas { get; }
         public ListView ShapeList { get; }
+        public TextBox ConstraintParam { get; }
 
         public int TotalPolygonCount { get; set; }
         public int TotalCircleCount { get; set; }
@@ -17,9 +18,10 @@ namespace polygon_editor {
 
         public CanvasControlState ControlState { get; private set; }
 
-        public CanvasState(Image canvas, ListView shapeList) {
+        public CanvasState(Image canvas, ListView shapeList, TextBox constraintParam) {
             Canvas = canvas;
             ShapeList = shapeList;
+            ConstraintParam = constraintParam;
             TotalPolygonCount = 0;
             TotalCircleCount = 0;
             Polygons = new List<Polygon>();
@@ -29,6 +31,15 @@ namespace polygon_editor {
 
             Plane.Fill(CanvasOptions.BACKGROUND_COLOR);
             Canvas.Source = Plane.CreateBitmapSource();
+        }
+
+        public int GetConstraintParam() {
+            try {
+                return int.Parse(ConstraintParam.Text);
+            }
+            catch {
+                return 0;
+            }
         }
 
         public (int?, Polygon) FindAnyEdgeWithinMouse(double mouseX, double mouseY) {

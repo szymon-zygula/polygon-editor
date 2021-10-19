@@ -18,6 +18,7 @@ namespace polygon_editor {
 
         public override void OnMouseMove(MouseEventArgs e) {
             ResizedCircle.R = Math.Abs(ResizedCircle.Y - (int)e.GetPosition(State.Canvas).Y);
+            ResizedCircle.ForceConstraintWithInvariant();
             State.UpdateCanvas();
         }
 

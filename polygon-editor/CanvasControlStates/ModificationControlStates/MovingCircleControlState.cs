@@ -23,6 +23,7 @@ namespace polygon_editor {
         }
 
         public override void OnMouseLeftButtonUp(MouseButtonEventArgs e) {
+            MovedCircle.ForceConstraintWithInvariant();
             State.SetControlState(new ActiveCircleControlState(State, MovedCircle));
         }
 
