@@ -80,11 +80,11 @@ namespace polygon_editor {
             Plane.Fill(CanvasOptions.BACKGROUND_COLOR);
 
             foreach (Polygon polygon in Polygons) {
-                Plane.DrawPolygon(polygon);
+                Plane.Draw(polygon);
             }
 
             foreach (Circle circle in Circles) {
-                Plane.DrawCircle(circle);
+                Plane.Draw(circle);
             }
 
             ControlState.DrawStateFeatures();

@@ -45,7 +45,7 @@ namespace polygon_editor {
         }
 
         public override void DrawStateFeatures() {
-            State.Plane.DrawIncompletePolygon(DrawnPolygon);
+            DrawnPolygon.DrawIncompleteOn(State.Plane);
         }
 
         public override void ExitState() {

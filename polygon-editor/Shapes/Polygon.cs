@@ -5,10 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace polygon_editor {
-    public class Polygon {
+    public class Polygon : Shape {
         public (int, int)[] Points { get; set; }
         public UInt32 Color { get; set; }
-        public int Index { get; set; }
 
         public Polygon() {
             Points = new (int, int)[0];
@@ -95,6 +94,25 @@ namespace polygon_editor {
 
         public override string ToString() {
             return $"Polygon {Index}";
+        }
+
+        public void DrawIncompleteOn(DrawingPlane plane) {
+            for (int i = 1; i < Points.Length; ++i) {
+                BresenhamDrawer.Line(
+                    plane, Color,
+                    Points[i - 1].Item1, Points[i - 1].Item2,
+                    Points[i].Item1, Points[i].Item2
+                );
+            }
+        }
+
+        public override void DrawOn(DrawingPlane plane) {
+            DrawIncompleteOn(plane);
+            BresenhamDrawer.Line(
+                plane, Color,
+                Points.Last().Item1, Points.Last().Item2,
+                Points.First().Item1, Points.First().Item2
+            );
         }
     }
 }

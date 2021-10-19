@@ -38,7 +38,7 @@ namespace polygon_editor {
 
         public override void DrawStateFeatures() {
             if (DrawnCircle.R == CIRCLE_RADIUS_NOT_SET) return;
-            State.Plane.DrawCircle(DrawnCircle);
+            State.Plane.Draw(DrawnCircle);
         }
 
         public override void ExitState() {

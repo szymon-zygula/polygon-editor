@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Shapes\Shape.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -82,16 +83,17 @@
     <Compile Include="CanvasControlStates\ModificationControlStates\ResizingCircleControlState.cs" />
     <Compile Include="CanvasOptions.cs" />
     <Compile Include="CanvasState.cs" />
+    <Compile Include="Constraints\Constraint.cs" />
     <Compile Include="DrawingPlane.cs" />
     <Compile Include="BresenhamDrawer.cs" />
-    <Compile Include="Circle.cs" />
+    <Compile Include="Shapes\Circle.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Polygon.cs" />
+    <Compile Include="Shapes\Polygon.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -117,8 +119,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Constraints\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
