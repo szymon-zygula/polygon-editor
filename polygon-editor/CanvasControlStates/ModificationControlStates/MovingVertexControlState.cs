@@ -27,6 +27,7 @@ namespace polygon_editor {
             ActivePolygon.Points[VertexIdx] = (
                 (int)e.GetPosition(State.Canvas).X,
                 (int)e.GetPosition(State.Canvas).Y);
+            ActivePolygon.ForceConstraintWithInvariantVertex(VertexIdx);
             State.UpdateCanvas();
         }
 

@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Constraints\ConstantEdgeLengthConstraint.cs" />
     <Compile Include="Constraints\ConstrantRadiusConstraint.cs" />
     <Compile Include="Shapes\Icon.cs" />
     <Compile Include="Shapes\PrefabIcons.cs" />

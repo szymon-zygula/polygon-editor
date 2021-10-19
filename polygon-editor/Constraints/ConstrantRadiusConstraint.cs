@@ -19,16 +19,15 @@ namespace polygon_editor {
             );
 
             UpdateIconPosition();
-
         }
 
         private void UpdateIconPosition() {
-
+            Icon.X = ConstrainedCircle.X + ICON_DISTANCE;
+            Icon.Y = ConstrainedCircle.Y + ICON_DISTANCE;
         }
 
         public override void DrawIcons(DrawingPlane plane) {
-            Icon.X = ConstrainedCircle.X + ICON_DISTANCE;
-            Icon.Y = ConstrainedCircle.Y + ICON_DISTANCE;
+            UpdateIconPosition();
             plane.Draw(Icon);
         }
 
@@ -36,7 +35,7 @@ namespace polygon_editor {
             ConstrainedCircle.R = R;
         }
 
-        public override void ForceConstraintWithInvariant(Shape invariantShape, int[] invariantVertices) {
+        public override void ForceConstraintWithInvariant(HashSet<(Shape, int)> invariantObjects) {
             ForceConstraint();
         }
     }

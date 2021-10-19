@@ -26,6 +26,7 @@ namespace polygon_editor {
             ActivePolygon.Points[idx1].Item2 += deltaY;
             ActivePolygon.Points[idx2].Item1 += deltaX;
             ActivePolygon.Points[idx2].Item2 += deltaY;
+            ActivePolygon.ForceConstraintWithInvariantEdge(EdgeIdx);
             State.UpdateCanvas();
         }
 

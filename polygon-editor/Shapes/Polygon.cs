@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace polygon_editor {
     public class Polygon : Shape {
         public (int, int)[] Points { get; set; }
         public UInt32 Color { get; set; }
 
+        public Constraint[] Constraints;
+
         public Polygon() {
+            Constraints = new Constraint[0];
             Points = new (int, int)[0];
         }
 
@@ -24,18 +28,28 @@ namespace polygon_editor {
         }
 
         public void InsertPointAt(int x, int y, int n) {
-            (int, int)[] newPoints = new (int, int)[Points.Length + 1];
-            Array.Copy(Points, newPoints, n);
-            Array.Copy(Points, n, newPoints, n + 1, Points.Length - n);
-            newPoints[n] = (x, y);
-            Points = newPoints;
+            Points = InsertElemAt((x, y), Points, n);
+            Constraints = InsertElemAt(null, Constraints, n);
+        }
+
+        private T[] InsertElemAt<T>(T elem, T[] array, int n) {
+            T[] newElems = new T[array.Length + 1];
+            Array.Copy(array, newElems, n);
+            Array.Copy(array, n, newElems, n + 1, array.Length - n);
+            newElems[n] = elem;
+            return newElems;
         }
 
         public void RemoveNthPoint(int n) {
-            (int, int)[] newPoints = new (int, int)[Points.Length - 1];
-            Array.Copy(Points, newPoints, n);
-            Array.Copy(Points, n + 1, newPoints, n, Points.Length - n - 1);
-            Points = newPoints;
+            Points = RemoveNthElem(n, Points);
+            Constraints = RemoveNthElem(n, Constraints);
+        }
+
+        private T[] RemoveNthElem<T>(int n, T[] array) {
+            T[] newElems = new T[array.Length - 1];
+            Array.Copy(array, newElems, n);
+            Array.Copy(array, n + 1, newElems, n, array.Length - n - 1);
+            return newElems;
         }
 
         public void RemoveLastPoint() {
@@ -113,6 +127,46 @@ namespace polygon_editor {
                 Points.Last().Item1, Points.Last().Item2,
                 Points.First().Item1, Points.First().Item2
             );
+
+            for(int i = 0; i < Constraints.Length; ++i) {
+                if (Constraints[i] != null) Constraints[i].DrawIcons(plane);
+            }
+        }
+
+        public void ForceConstraintWithInvariantVertex(int vertex) {
+            if (Constraints[vertex] != null) {
+                Constraints[vertex].ForceConstraintWithInvariant(
+                        new HashSet<(Shape, int)> { (this, vertex) }
+                );
+            }
+
+            int prevEdge = vertex > 0 ? vertex - 1 : Points.Length - 1;
+
+            if (Constraints[prevEdge] != null) {
+                Constraints[prevEdge].ForceConstraintWithInvariant(
+                        new HashSet<(Shape, int)> { (this, vertex) }
+                );
+            }
+        }
+
+        public void ForceConstraintWithInvariantEdge(int edge) {
+            int prevEdge = edge > 0 ? edge - 1 : Points.Length - 1;
+            int nextEdge = edge == Points.Length - 1 ? 0 : edge + 1;
+            HashSet<(Shape, int)> invariant = new HashSet<(Shape, int)> {
+                (this, edge), (this, edge == Points.Length - 1 ? 0 : edge + 1)
+            };
+
+            if (Constraints[edge] != null) {
+                Constraints[edge].ForceConstraintWithInvariant(invariant);
+            }
+
+            if (Constraints[prevEdge] != null) {
+                Constraints[prevEdge].ForceConstraintWithInvariant(invariant);
+            }
+
+            if (Constraints[nextEdge] != null) {
+                Constraints[nextEdge].ForceConstraintWithInvariant(invariant);
+            }
         }
     }
 }

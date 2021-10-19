@@ -6,10 +6,16 @@ using System.Threading.Tasks;
 
 namespace polygon_editor {
     public abstract class Constraint {
-        protected static int ICON_DISTANCE = 10;
+        protected static int ICON_DISTANCE = 5;
         protected Icon Icon;
+
+        protected const int RECURRENT_APPLICATION_LIMIT = 25;
+        protected int RecurrentApplicationCount = 0;
+
+        protected const int MAX_ABSOLUTE_ERROR = 2;
+
         public abstract void ForceConstraint();
-        public abstract void ForceConstraintWithInvariant(Shape invariantShape, int[] invariantIndices);
+        public abstract void ForceConstraintWithInvariant(HashSet<(Shape, int)> invariantIndices);
         public abstract void DrawIcons(DrawingPlane plane);
     }
 }

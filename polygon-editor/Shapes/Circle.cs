@@ -26,7 +26,7 @@ namespace polygon_editor {
         }
 
         public void ForceConstraintWithInvariant() {
-            if (Constraint != null) Constraint.ForceConstraintWithInvariant(this, null);
+            if (Constraint != null) Constraint.ForceConstraintWithInvariant(new HashSet<(Shape, int)> { (this, 0) });
         }
     }
 }
