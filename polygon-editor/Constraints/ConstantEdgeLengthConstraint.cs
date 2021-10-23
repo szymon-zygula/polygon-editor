@@ -43,28 +43,12 @@ namespace polygon_editor {
         }
 
         public override void ForceConstraintWithInvariant(HashSet<(Shape, int)> invariantIndices) {
+            if (Math.Abs(Polygon.EdgeLength(Vertex1) - Length) <= MAX_ABSOLUTE_ERROR) return;
+
             bool isSecondInvariant = invariantIndices.Contains((Polygon, Vertex2));
-            int vrt1 = Vertex1;
-            int vrt2 = Vertex2;
-            if(isSecondInvariant) {
-                (vrt1, vrt2) = (vrt2, vrt1);
-            }
+            int vertex = isSecondInvariant ? Vertex1 : Vertex2;
 
-            (double, double) abVec = (
-                Polygon.Points[vrt2].Item1 - Polygon.Points[vrt1].Item1,
-                Polygon.Points[vrt2].Item2 - Polygon.Points[vrt1].Item2
-            );
-
-            double abVecLen = Math.Sqrt(abVec.Item1 * abVec.Item1 + abVec.Item2 * abVec.Item2);
-
-            if (Math.Abs(abVecLen - Length) <= MAX_ABSOLUTE_ERROR) return;
-
-            (double, double) transVec = (
-                abVec.Item1 / abVecLen * Length, abVec.Item2 / abVecLen * Length
-            );
-
-            Polygon.Points[vrt2].Item1 = Polygon.Points[vrt1].Item1 + (int)Math.Round(transVec.Item1);
-            Polygon.Points[vrt2].Item2 = Polygon.Points[vrt1].Item2 + (int)Math.Round(transVec.Item2);
+            Polygon.MoveVertexToEdgeLength(vertex, Vertex1, Length);
 
             int prevEdge = Vertex1 > 0 ? Vertex1 - 1 : Polygon.Points.Length - 1;
             int nextEdge = Vertex2;
@@ -73,12 +57,18 @@ namespace polygon_editor {
                 return;
             }
 
+            ForceRecurrentContstraint(
+                isSecondInvariant ? prevEdge : nextEdge,
+                isSecondInvariant ? Vertex1 : Vertex2
+            );
+        }
+
+        private void ForceRecurrentContstraint(int edge, int invVert) {
             RecurrentApplicationCount += 1;
             if(RecurrentApplicationCount < RECURRENT_APPLICATION_LIMIT) {
-                Polygon.Constraints[isSecondInvariant ? prevEdge : nextEdge]
-                    .ForceConstraintWithInvariant(
-                        new HashSet<(Shape, int)> { (Polygon, isSecondInvariant ? Vertex1 : Vertex2) }
-                    );
+                Polygon.Constraints[edge] .ForceConstraintWithInvariant(
+                    new HashSet<(Shape, int)> { (Polygon, invVert) }
+                );
             }
             RecurrentApplicationCount -= 1;
         }

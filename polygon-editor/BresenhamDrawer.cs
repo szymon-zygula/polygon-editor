@@ -57,20 +57,12 @@ namespace polygon_editor {
 
         public static void Line(DrawingPlane plane, UInt32 color, int x0, int y0, int x1, int y1) {
             if (Math.Abs(y1 - y0) < Math.Abs(x1 - x0)) {
-                if (x0 > x1) {
-                    BresenhamDrawer.LineLow(plane, color, x1, y1, x0, y0);
-                }
-                else {
-                    BresenhamDrawer.LineLow(plane, color, x0, y0, x1, y1);
-                }
+                if (x0 > x1) LineLow(plane, color, x1, y1, x0, y0);
+                else LineLow(plane, color, x0, y0, x1, y1);
             }
             else {
-                if (y0 > y1) {
-                    BresenhamDrawer.LineHigh(plane, color, x1, y1, x0, y0);
-                }
-                else {
-                    BresenhamDrawer.LineHigh(plane, color, x0, y0, x1, y1);
-                }
+                if (y0 > y1) LineHigh(plane, color, x1, y1, x0, y0);
+                else LineHigh(plane, color, x0, y0, x1, y1);
             }
         }
 

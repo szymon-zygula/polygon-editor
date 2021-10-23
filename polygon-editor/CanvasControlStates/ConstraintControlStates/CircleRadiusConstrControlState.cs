@@ -23,7 +23,7 @@ namespace polygon_editor {
             if (activeCircle == null) return;
             int newRadius = State.GetConstraintParam();
             if (newRadius == 0) return;
-            activeCircle.Constraint = new ConstrantRadiusConstraint(activeCircle, newRadius);
+            activeCircle.Constraint = new ConstantRadiusConstraint(activeCircle, newRadius);
             activeCircle.Constraint.ForceConstraint();
             State.SetControlState(new DoingNothingControlState(State));
         }

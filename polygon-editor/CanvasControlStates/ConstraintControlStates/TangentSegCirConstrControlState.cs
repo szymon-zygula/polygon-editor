@@ -7,23 +7,23 @@ using System.Windows.Input;
 
 namespace polygon_editor {
     class TangentSegCirConstrControlState : CanvasControlState {
-        Polygon Polygon1;
-        int? Edge1;
+        Polygon Polygon;
+        int? Edge;
 
         public TangentSegCirConstrControlState(CanvasState state) : base(state) {
 
         }
 
         public override void OnMouseLeftButtonDown(MouseButtonEventArgs e) {
-            if(!Edge1.HasValue) {
+            if(!Edge.HasValue) {
                 (int? activeEdge, Polygon activePolygon) = State.FindAnyEdgeWithinMouse(
                     e.GetPosition(State.Canvas).X, e.GetPosition(State.Canvas).Y
                 );
 
                 if (activeEdge == null) return;
 
-                Edge1 = activeEdge;
-                Polygon1 = activePolygon;
+                Edge = activeEdge;
+                Polygon = activePolygon;
                 State.UpdateCanvas();
             }
             else {
@@ -31,6 +31,10 @@ namespace polygon_editor {
                     e.GetPosition(State.Canvas).X, e.GetPosition(State.Canvas).Y
                 );
                 if (activeCircle == null) return;
+                Constraint constraint = new TangentCircleConstraint(activeCircle, Polygon, Edge.Value);
+                Polygon.Constraints[Edge.Value] = constraint;
+                activeCircle.Constraint = constraint;
+                constraint.ForceConstraint();
                 State.SetControlState(new DoingNothingControlState(State));
             }
         }
@@ -40,7 +44,7 @@ namespace polygon_editor {
         }
 
         public override void DrawStateFeatures() {
-            if (Edge1 == null) {
+            if (Edge == null) {
                 foreach (Polygon polygon in State.Polygons) {
                     State.Plane.MarkPolygonEdges(
                         CanvasOptions.ADDING_CONSTRAINT_MARKER_COLOR,
@@ -61,7 +65,7 @@ namespace polygon_editor {
                 State.Plane.MarkPolygonEdge(
                     CanvasOptions.SET_CONSTRAINT_MARKER_COLOR,
                     CanvasOptions.ACTIVE_EDGE_RADIUS,
-                    Polygon1, Edge1.Value
+                    Polygon, Edge.Value
                 );
             }
         }

@@ -133,6 +133,12 @@ namespace polygon_editor {
             }
         }
 
+        public void ForceAllContsraints() {
+            for(int i = 0; i < Constraints.Length; ++i) {
+                if(Constraints[i] != null) Constraints[i].ForceConstraint();
+            }
+        }
+
         public void ForceConstraintWithInvariantVertex(int vertex) {
             if (Constraints[vertex] != null) {
                 Constraints[vertex].ForceConstraintWithInvariant(
@@ -167,6 +173,21 @@ namespace polygon_editor {
             if (Constraints[nextEdge] != null) {
                 Constraints[nextEdge].ForceConstraintWithInvariant(invariant);
             }
+        }
+
+        public (double, double) EdgeVector(int edge1, int edge2) {
+            return (
+                Points[edge2].Item1 - Points[edge1].Item1,
+                Points[edge2].Item2 - Points[edge1].Item2
+            );
+        }
+
+        public void MoveVertexToEdgeLength(int vrtx, int edge, int len) {
+            int rootVrtx = edge == vrtx ? (edge + 1) % Points.Length : edge;
+            var edgeVec = EdgeVector(rootVrtx, vrtx);
+            double edgeVecLen = MathUtils.VectorLength(edgeVec);
+            var transVec = MathUtils.MulVector(edgeVec, (double)len / edgeVecLen);
+            MathUtils.MovePoint(ref Points[vrtx], Points[rootVrtx], transVec);
         }
     }
 }

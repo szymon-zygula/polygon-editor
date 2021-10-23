@@ -19,6 +19,7 @@ namespace polygon_editor {
         public override void OnMouseMove(MouseEventArgs e) {
             MovedCircle.X = (int)e.GetPosition(State.Canvas).X;
             MovedCircle.Y = (int)e.GetPosition(State.Canvas).Y;
+            MovedCircle.ForceConstraintWithInvariant();
             State.UpdateCanvas();
         }
 

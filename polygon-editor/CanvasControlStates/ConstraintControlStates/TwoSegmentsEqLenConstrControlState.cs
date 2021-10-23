@@ -13,7 +13,11 @@ namespace polygon_editor {
         }
 
         public override void OnSelectionComplete() {
-            MessageBox.Show("segs set eq len");
+            Constraint constraint = 
+                new EqualEdgeLengthsConstraint(Polygon1, Edge1.Value, Polygon2, Edge2.Value);
+            Polygon1.Constraints[Edge1.Value] = constraint;
+            Polygon2.Constraints[Edge2.Value] = constraint;
+            constraint.ForceConstraint();
             State.SetControlState(new DoingNothingControlState(State));
         }
     }

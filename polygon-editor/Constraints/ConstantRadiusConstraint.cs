@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace polygon_editor {
-    class ConstrantRadiusConstraint : Constraint {
+    class ConstantRadiusConstraint : Constraint {
         Circle ConstrainedCircle;
         int R;
 
-        public ConstrantRadiusConstraint(Circle circle, int r) {
+        public ConstantRadiusConstraint(Circle circle, int r) {
             R = r;
             ConstrainedCircle = circle;
             Icon = new Icon(

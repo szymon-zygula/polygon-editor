@@ -56,7 +56,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Constraints\ConstantEdgeLengthConstraint.cs" />
-    <Compile Include="Constraints\ConstrantRadiusConstraint.cs" />
+    <Compile Include="Constraints\ConstantRadiusConstraint.cs" />
+    <Compile Include="Constraints\EqualEdgeLengthsConstraint.cs" />
+    <Compile Include="Constraints\TangentCircleConstraint.cs" />
+    <Compile Include="MathUtils.cs" />
     <Compile Include="Shapes\Icon.cs" />
     <Compile Include="Shapes\PrefabIcons.cs" />
     <Compile Include="Shapes\Shape.cs" />
