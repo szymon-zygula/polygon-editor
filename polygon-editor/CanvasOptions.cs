@@ -18,5 +18,6 @@ namespace polygon_editor {
 
         public static readonly Cursor NORMAL_CURSOR = Cursors.Arrow;
         public static readonly Cursor DRAW_CURSOR = Cursors.Cross;
+        public static readonly Cursor REMOVE_CURSOR = Cursors.Hand;
     }
 }

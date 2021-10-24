@@ -19,6 +19,7 @@ namespace polygon_editor {
             if (activeEdge == null) return;
             int newLength = State.GetConstraintParam();
             if (newLength == 0) return;
+            if (activePolygon.Constraints[activeEdge.Value] != null) activePolygon.Constraints[activeEdge.Value].Neutralize();
             activePolygon.Constraints[activeEdge.Value] =
                 new ConstantEdgeLengthConstraint(activePolygon, activeEdge.Value, newLength);
             activePolygon.Constraints[activeEdge.Value].ForceConstraint();

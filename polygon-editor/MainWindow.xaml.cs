@@ -77,5 +77,9 @@ namespace polygon_editor {
         private void ButtonSegPerpen_Click(object sender, RoutedEventArgs e) {
             State.SetControlState(new SegmentPerpenConstrControlState(State));
         }
+
+        private void ButtonRemoveConstraint_Click(object sender, RoutedEventArgs e) {
+            State.SetControlState(new RemoveConstraintControlState(State));
+        }
     }
 }

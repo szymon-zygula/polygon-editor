@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CanvasControlStates\ModificationControlStates\RemoveConstraintControlState.cs" />
     <Compile Include="Constraints\ConstantEdgeLengthConstraint.cs" />
     <Compile Include="Constraints\ConstantRadiusConstraint.cs" />
     <Compile Include="Constraints\EqualEdgeLengthsConstraint.cs" />

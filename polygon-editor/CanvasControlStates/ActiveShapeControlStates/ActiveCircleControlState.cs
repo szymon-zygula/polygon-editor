@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace polygon_editor {
     public class ActiveCircleControlState : CanvasControlState {
-        Circle ActiveCircle;
+        readonly Circle ActiveCircle;
         public ActiveCircleControlState(CanvasState state, Circle circle) : base(state) {
             ActiveCircle = circle;
         }

@@ -32,7 +32,9 @@ namespace polygon_editor {
                 );
                 if (activeCircle == null) return;
                 Constraint constraint = new TangentCircleConstraint(activeCircle, Polygon, Edge.Value);
+                if (Polygon.Constraints[Edge.Value] != null) Polygon.Constraints[Edge.Value].Neutralize();
                 Polygon.Constraints[Edge.Value] = constraint;
+                if (activeCircle.Constraint != null) activeCircle.Constraint.Neutralize();
                 activeCircle.Constraint = constraint;
                 constraint.ForceConstraint();
                 State.SetControlState(new DoingNothingControlState(State));

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace polygon_editor {
     public abstract class Constraint {
-        protected static int ICON_DISTANCE = 5;
+        public static int ICON_DISTANCE = 5;
         protected Icon Icon;
 
         protected const int RECURRENT_APPLICATION_LIMIT = 25;

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:polygon_editor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="480" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="75*" />
@@ -14,7 +14,7 @@
         <Image
             Name="Canvas"
             Width="576px"
-            Height="401px"
+            Height="431px"
             MouseMove="CanvasImage_MouseMove"
             MouseLeftButtonUp="CanvasImage_MouseLeftButtonUp"
             MouseLeftButtonDown="CanvasImage_MouseLeftButtonDown"
@@ -26,6 +26,7 @@
                 <RowDefinition Height="30px" />
                 <RowDefinition Height="30px" />
                 <RowDefinition Height="170px" />
+                <RowDefinition Height="30px" />
                 <RowDefinition Height="30px" />
                 <RowDefinition Height="30px" />
                 <RowDefinition Height="30px" />
@@ -105,6 +106,13 @@
                     Name="TextBoxConstraintParameter"
                 />
             </Grid>
+            <Button
+                Grid.Row="9"
+                Margin="5px"
+                Name="ButtonRemoveConstraint"
+                Content="Remove Constraint"
+                Click="ButtonRemoveConstraint_Click"
+            />
         </Grid>
     </Grid>
 </Window>
