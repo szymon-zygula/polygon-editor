@@ -4,8 +4,8 @@ using System.Collections.Generic;
 namespace polygon_editor {
     class ConstantEdgeLengthConstraint : Constraint {
         Polygon Polygon;
-        readonly int Vertex1;
-        readonly int Vertex2;
+        int Vertex1;
+        int Vertex2;
         readonly int Length;
 
         public ConstantEdgeLengthConstraint(Polygon polygon, int edge, int length) {
@@ -73,6 +73,13 @@ namespace polygon_editor {
         public override void Neutralize() {
             Polygon.Constraints[Vertex1] = null;
             Polygon = null;
+        }
+
+        public override void MoveVertexPolygonForward(Polygon polygon, int edge) {
+            if(polygon == Polygon && edge == Vertex1) {
+                Vertex1 = (Vertex1 + 1) % Polygon.Points.Length;
+                Vertex2 = (Vertex2 + 1) % Polygon.Points.Length;
+            }
         }
     }
 }

@@ -4,12 +4,12 @@ using System.Collections.Generic;
 namespace polygon_editor {
     public class PerpendicularEdgesConstraint : Constraint {
         Polygon Polygon1;
-        readonly int Vertex1_1;
-        readonly int Vertex1_2;
+        int Vertex1_1;
+        int Vertex1_2;
 
         Polygon Polygon2;
-        readonly int Vertex2_1;
-        readonly int Vertex2_2;
+        int Vertex2_1;
+        int Vertex2_2;
 
         readonly Icon Icon1;
         readonly Icon Icon2;
@@ -87,7 +87,10 @@ namespace polygon_editor {
             polygon.Points[switchEdges ? Vertex1_1 : Vertex2_1] = MathUtils.RoundVector(MathUtils.RotateByCenter(midpoint2, vrtx2_1, phi));
             polygon.Points[switchEdges ? Vertex1_2 : Vertex2_2] = MathUtils.RoundVector(MathUtils.RotateByCenter(midpoint2, vrtx2_2, phi));
 
-            ForceRecurrentContstraint(polygon, switchEdges ? Vertex1_1 : Vertex2_1, switchEdges ? Vertex1_1 : Vertex2_1);
+            int prevEdge = (switchEdges ? Vertex1_1 : Vertex2_1) - 1;
+            int corPrevEdge = prevEdge == -1 ? (switchEdges ? Polygon1.Points.Length : Polygon2.Points.Length) - 1 : prevEdge;
+
+            ForceRecurrentContstraint(polygon, corPrevEdge, switchEdges ? Vertex1_1 : Vertex2_1);
             if(RecurrentApplicationCount == 0) {
                 ForceRecurrentContstraint(polygon, switchEdges ? Vertex1_2 : Vertex2_2, switchEdges ? Vertex1_2 : Vertex2_2);
             }
@@ -95,6 +98,7 @@ namespace polygon_editor {
 
         private void ForceRecurrentContstraint(Polygon poly, int edge, int invVert) {
             RecurrentApplicationCount += 1;
+
             if(RecurrentApplicationCount < RECURRENT_APPLICATION_LIMIT && poly.Constraints[edge] != null) {
                 poly.Constraints[edge].ForceConstraintWithInvariant(
                     new HashSet<(Shape, int)> { (poly, invVert) }
@@ -108,6 +112,17 @@ namespace polygon_editor {
             Polygon1 = null;
             Polygon2.Constraints[Vertex2_1] = null;
             Polygon2 = null;
+        }
+
+        public override void MoveVertexPolygonForward(Polygon polygon, int edge) {
+            if (polygon == Polygon1 && edge == Vertex1_1) {
+                Vertex1_1 = (Vertex1_1 + 1) % Polygon1.Points.Length;
+                Vertex1_2 = (Vertex1_2 + 1) % Polygon1.Points.Length;
+            }
+            else if(polygon == Polygon2 && edge == Vertex2_1) {
+                Vertex2_1 = (Vertex2_1 + 1) % Polygon2.Points.Length;
+                Vertex2_2 = (Vertex2_2 + 1) % Polygon2.Points.Length;
+            }
         }
     }
 }

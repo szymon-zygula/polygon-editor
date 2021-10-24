@@ -44,5 +44,8 @@ namespace polygon_editor {
             Circle.Constraint = null;
             Circle = null;
         }
+
+        public override void MoveVertexPolygonForward(Polygon polygon, int edge) {
+        }
     }
 }

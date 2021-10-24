@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace polygon_editor{
     class ActivePolygonControlState : CanvasControlState {
-        Polygon ActivePolygon;
+        readonly Polygon ActivePolygon;
         public ActivePolygonControlState(CanvasState state, Polygon polygon) : base(state) {
             ActivePolygon = polygon;
         }
@@ -90,7 +86,7 @@ namespace polygon_editor{
             double mouseY = e.GetPosition(State.Canvas).Y;
             int? edge = ActivePolygon.FindEdgeWithinSquareRadius(mouseX, mouseY, CanvasOptions.ACTIVE_EDGE_RADIUS);
             if (edge == null) return;
-            ActivePolygon.Constraints[edge.Value].Neutralize();
+            if(ActivePolygon.Constraints[edge.Value] != null) ActivePolygon.Constraints[edge.Value].Neutralize();
             (int, int) midpoint = ActivePolygon.EdgeMidpoint(edge.Value);
             ActivePolygon.InsertPointAt(midpoint.Item1, midpoint.Item2, edge.Value + 1);
             State.UpdateCanvas();

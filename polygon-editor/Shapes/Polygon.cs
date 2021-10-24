@@ -29,6 +29,11 @@ namespace polygon_editor {
 
         public void InsertPointAt(int x, int y, int n) {
             Points = InsertElemAt((x, y), Points, n);
+            for(int i = n; i < Constraints.Length; ++i) {
+                if (Constraints[i] != null) {
+                    Constraints[i].MoveVertexPolygonForward(this, i);
+                }
+            }
             Constraints = InsertElemAt(null, Constraints, n);
         }
 
@@ -135,7 +140,7 @@ namespace polygon_editor {
             }
         }
 
-        public void ForceAllContsraints() {
+        public void ForceAllConstraints() {
             for(int i = 0; i < Constraints.Length; ++i) {
                 if(Constraints[i] != null) Constraints[i].ForceConstraint();
             }

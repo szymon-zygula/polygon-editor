@@ -5,7 +5,7 @@ namespace polygon_editor {
     public class TangentCircleConstraint : Constraint {
         Circle Circle;
         Polygon Polygon;
-        readonly int Edge;
+        int Edge;
 
         readonly Icon Icon1;
         readonly Icon Icon2;
@@ -50,7 +50,7 @@ namespace polygon_editor {
             double B = vrt2.Item1 - vrt1.Item1;
             double C = -vrt1.Item2 * B - A * vrt1.Item1;
             double d = Math.Abs(A * Circle.X + B * Circle.Y + C) / Math.Sqrt(A * A + B * B);
-            Circle.R = (int)d;
+            Circle.R = (int)Math.Round(d);
         }
 
         public override void ForceConstraintWithInvariant(HashSet<(Shape, int)> invariantIndices) {
@@ -62,6 +62,12 @@ namespace polygon_editor {
             Circle = null;
             Polygon.Constraints[Edge] = null;
             Polygon = null;
+        }
+
+        public override void MoveVertexPolygonForward(Polygon polygon, int edge) {
+            if (polygon == Polygon && edge == Edge) {
+                Edge = (Edge + 1) % Polygon.Points.Length;
+            }
         }
     }
 }

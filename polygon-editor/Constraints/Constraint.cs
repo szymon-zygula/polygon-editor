@@ -18,5 +18,6 @@ namespace polygon_editor {
         public abstract void ForceConstraintWithInvariant(HashSet<(Shape, int)> invariantIndices);
         public abstract void DrawIcons(DrawingPlane plane);
         public abstract void Neutralize();
+        public abstract void MoveVertexPolygonForward(Polygon polygon, int edge);
     }
 }

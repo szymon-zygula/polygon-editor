@@ -24,12 +24,12 @@ namespace polygon_editor{
                 MovedPolygon.Points[i].Item1 += deltaX;
                 MovedPolygon.Points[i].Item2 += deltaY;
             }
-            MovedPolygon.ForceAllContsraints();
+            MovedPolygon.ForceAllConstraints();
             State.UpdateCanvas();
         }
 
         public override void OnMouseLeftButtonUp(MouseButtonEventArgs e) {
-            MovedPolygon.ForceAllContsraints();
+            MovedPolygon.ForceAllConstraints();
             State.SetControlState(new ActivePolygonControlState(State, MovedPolygon));
         }
 

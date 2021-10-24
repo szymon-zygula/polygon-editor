@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace polygon_editor {
     public class EqualEdgeLengthsConstraint : Constraint {
         Polygon Polygon1;
-        readonly int Vertex1_1;
-        readonly int Vertex1_2;
+        int Vertex1_1;
+        int Vertex1_2;
 
         Polygon Polygon2;
-        readonly int Vertex2_1;
-        readonly int Vertex2_2;
+        int Vertex2_1;
+        int Vertex2_2;
 
         readonly Icon Icon1;
         readonly Icon Icon2;
@@ -107,6 +108,17 @@ namespace polygon_editor {
             Polygon1 = null;
             Polygon2.Constraints[Vertex2_1] = null;
             Polygon2 = null;
+        }
+
+        public override void MoveVertexPolygonForward(Polygon polygon, int edge) {
+            if (polygon == Polygon1 && edge == Vertex1_1) {
+                Vertex1_1 = (Vertex1_1 + 1) % Polygon1.Points.Length;
+                Vertex1_2 = (Vertex1_2 + 1) % Polygon1.Points.Length;
+            }
+            else if(polygon == Polygon2 && edge == Vertex2_1) {
+                Vertex2_1 = (Vertex2_1 + 1) % Polygon2.Points.Length;
+                Vertex2_2 = (Vertex2_2 + 1) % Polygon2.Points.Length;
+            }
         }
     }
 }
