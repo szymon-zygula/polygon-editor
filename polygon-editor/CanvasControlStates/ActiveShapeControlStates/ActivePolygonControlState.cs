@@ -66,6 +66,10 @@ namespace polygon_editor{
         }
 
         private void RemoveActivePolygon() {
+            for(int i = 0; i < ActivePolygon.Constraints.Length; ++i) {
+                if (ActivePolygon.Constraints[i] != null) ActivePolygon.Constraints[i].Neutralize();
+            }
+
             State.Polygons.Remove(ActivePolygon);
             State.ShapeList.Items.Remove(ActivePolygon);
             State.SetControlState(new DoingNothingControlState(State));
@@ -86,6 +90,7 @@ namespace polygon_editor{
             double mouseY = e.GetPosition(State.Canvas).Y;
             int? edge = ActivePolygon.FindEdgeWithinSquareRadius(mouseX, mouseY, CanvasOptions.ACTIVE_EDGE_RADIUS);
             if (edge == null) return;
+            ActivePolygon.Constraints[edge.Value].Neutralize();
             (int, int) midpoint = ActivePolygon.EdgeMidpoint(edge.Value);
             ActivePolygon.InsertPointAt(midpoint.Item1, midpoint.Item2, edge.Value + 1);
             State.UpdateCanvas();

@@ -52,6 +52,7 @@ namespace polygon_editor {
         }
 
         private void RemoveActiveCircle() {
+            if(ActiveCircle.Constraint != null) ActiveCircle.Constraint.Neutralize();
             State.Circles.Remove(ActiveCircle);
             State.ShapeList.Items.Remove(ActiveCircle);
             State.SetControlState(new DoingNothingControlState(State));

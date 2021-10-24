@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace polygon_editor {
     class ConstantRadiusConstraint : Constraint {
-        Circle ConstrainedCircle;
-        int R;
+        Circle Circle;
+        readonly int R;
 
         public ConstantRadiusConstraint(Circle circle, int r) {
             R = r;
-            ConstrainedCircle = circle;
+            Circle = circle;
             Icon = new Icon(
                 PrefabIcons.CONST_LENGTH_ICON_COLOR,
                 PrefabIcons.ICON_SIZE,
@@ -22,8 +22,9 @@ namespace polygon_editor {
         }
 
         private void UpdateIconPosition() {
-            Icon.X = ConstrainedCircle.X + ICON_DISTANCE;
-            Icon.Y = ConstrainedCircle.Y + ICON_DISTANCE;
+            if (Circle == null) return;
+            Icon.X = Circle.X + ICON_DISTANCE;
+            Icon.Y = Circle.Y + ICON_DISTANCE;
         }
 
         public override void DrawIcons(DrawingPlane plane) {
@@ -32,11 +33,16 @@ namespace polygon_editor {
         }
 
         public override void ForceConstraint() {
-            ConstrainedCircle.R = R;
+            Circle.R = R;
         }
 
         public override void ForceConstraintWithInvariant(HashSet<(Shape, int)> invariantObjects) {
             ForceConstraint();
+        }
+
+        public override void Neutralize() {
+            Circle.Constraint = null;
+            Circle = null;
         }
     }
 }

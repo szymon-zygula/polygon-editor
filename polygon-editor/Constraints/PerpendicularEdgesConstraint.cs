@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace polygon_editor {
     public class PerpendicularEdgesConstraint : Constraint {
-        readonly Polygon Polygon1;
+        Polygon Polygon1;
         readonly int Vertex1_1;
         readonly int Vertex1_2;
 
-        readonly Polygon Polygon2;
+        Polygon Polygon2;
         readonly int Vertex2_1;
         readonly int Vertex2_2;
 
@@ -39,6 +39,7 @@ namespace polygon_editor {
         }
 
         private void UpdateIconsPositions() {
+            if (Polygon1 == null || Polygon2 == null) return;
             (int, int) midpoint = Polygon1.EdgeMidpoint(Vertex1_1);
             Icon1.X = midpoint.Item1 + ICON_DISTANCE;
             Icon1.Y = midpoint.Item2 + ICON_DISTANCE;
@@ -94,12 +95,19 @@ namespace polygon_editor {
 
         private void ForceRecurrentContstraint(Polygon poly, int edge, int invVert) {
             RecurrentApplicationCount += 1;
-            if(RecurrentApplicationCount < RECURRENT_APPLICATION_LIMIT) {
+            if(RecurrentApplicationCount < RECURRENT_APPLICATION_LIMIT && poly.Constraints[edge] != null) {
                 poly.Constraints[edge].ForceConstraintWithInvariant(
                     new HashSet<(Shape, int)> { (poly, invVert) }
                 );
             }
             RecurrentApplicationCount -= 1;
+        }
+
+        public override void Neutralize() {
+            Polygon1.Constraints[Vertex1_1] = null;
+            Polygon1 = null;
+            Polygon2.Constraints[Vertex2_1] = null;
+            Polygon2 = null;
         }
     }
 }

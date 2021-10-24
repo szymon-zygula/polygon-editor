@@ -41,6 +41,8 @@ namespace polygon_editor {
         }
 
         public void RemoveNthPoint(int n) {
+            if(Constraints[n] != null) Constraints[n].Neutralize();
+            if(Constraints[(n - 1) % Constraints.Length] != null) Constraints[(n - 1) % Constraints.Length].Neutralize();
             Points = RemoveNthElem(n, Points);
             Constraints = RemoveNthElem(n, Constraints);
         }

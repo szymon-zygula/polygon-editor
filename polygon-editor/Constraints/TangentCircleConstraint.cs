@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace polygon_editor {
     public class TangentCircleConstraint : Constraint {
-        readonly Circle Circle;
-        readonly Polygon Polygon;
+        Circle Circle;
+        Polygon Polygon;
         readonly int Edge;
 
         readonly Icon Icon1;
@@ -35,6 +35,7 @@ namespace polygon_editor {
         }
 
         private void UpdateIconsPositions() {
+            if (Polygon == null || Circle == null) return;
             (int, int) midpoint = Polygon.EdgeMidpoint(Edge);
             Icon1.X = midpoint.Item1 + ICON_DISTANCE;
             Icon1.Y = midpoint.Item2 + ICON_DISTANCE;
@@ -54,6 +55,13 @@ namespace polygon_editor {
 
         public override void ForceConstraintWithInvariant(HashSet<(Shape, int)> invariantIndices) {
             ForceConstraint();
+        }
+
+        public override void Neutralize() {
+            Circle.Constraint = null;
+            Circle = null;
+            Polygon.Constraints[Edge] = null;
+            Polygon = null;
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace polygon_editor {
     class ConstantEdgeLengthConstraint : Constraint {
-        readonly Polygon Polygon;
+        Polygon Polygon;
         readonly int Vertex1;
         readonly int Vertex2;
         readonly int Length;
@@ -24,6 +24,7 @@ namespace polygon_editor {
         }
 
         private void UpdateIconPosition() {
+            if (Polygon == null) return;
             (int, int) midpoint = Polygon.EdgeMidpoint(Vertex1);
             Icon.X = midpoint.Item1 + ICON_DISTANCE;
             Icon.Y = midpoint.Item2 + ICON_DISTANCE;
@@ -61,12 +62,17 @@ namespace polygon_editor {
 
         private void ForceRecurrentContstraint(int edge, int invVert) {
             RecurrentApplicationCount += 1;
-            if(RecurrentApplicationCount < RECURRENT_APPLICATION_LIMIT) {
+            if(RecurrentApplicationCount < RECURRENT_APPLICATION_LIMIT && Polygon.Constraints[edge] != null) {
                 Polygon.Constraints[edge] .ForceConstraintWithInvariant(
                     new HashSet<(Shape, int)> { (Polygon, invVert) }
                 );
             }
             RecurrentApplicationCount -= 1;
+        }
+
+        public override void Neutralize() {
+            Polygon.Constraints[Vertex1] = null;
+            Polygon = null;
         }
     }
 }

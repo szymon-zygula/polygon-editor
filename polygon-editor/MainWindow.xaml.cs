@@ -5,7 +5,7 @@ using System.Windows.Input;
 namespace polygon_editor {
 
     public partial class MainWindow : Window {
-        private CanvasState State;
+        private readonly CanvasState State;
 
         public MainWindow() {
             InitializeComponent();
