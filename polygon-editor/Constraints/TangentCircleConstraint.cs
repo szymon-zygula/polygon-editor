@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace polygon_editor {
     public class TangentCircleConstraint : Constraint {
-        Circle Circle;
-        Polygon Polygon;
-        int Edge;
+        readonly Circle Circle;
+        readonly Polygon Polygon;
+        readonly int Edge;
 
-        Icon Icon1;
-        Icon Icon2;
+        readonly Icon Icon1;
+        readonly Icon Icon2;
 
         public TangentCircleConstraint(Circle circle, Polygon polygon, int edge) {
             Circle = circle;

@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace polygon_editor{
     class MovingPolygonControlState : CanvasControlState {
-        Polygon MovedPolygon;
+        readonly Polygon MovedPolygon;
         public MovingPolygonControlState(CanvasState state, Polygon polygon) : base(state) {
             MovedPolygon = polygon;
         }

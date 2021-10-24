@@ -1,30 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace polygon_editor {
     public class EqualEdgeLengthsConstraint : Constraint {
-        Polygon Polygon1;
-        int Vertex1_1;
-        int Vertex1_2;
+        readonly Polygon Polygon1;
+        readonly int Vertex1_1;
+        readonly int Vertex1_2;
 
-        Polygon Polygon2;
-        int Vertex2_1;
-        int Vertex2_2;
+        readonly Polygon Polygon2;
+        readonly int Vertex2_1;
+        readonly int Vertex2_2;
 
-        Icon Icon1;
-        Icon Icon2;
+        readonly Icon Icon1;
+        readonly Icon Icon2;
 
         public EqualEdgeLengthsConstraint(Polygon polygon1, int edge1, Polygon polygon2, int edge2) {
             Polygon1 = polygon1;
             Vertex1_1 = edge1;
-            Vertex1_2 = edge1 == polygon1.Points.Length - 1 ? 0 : edge1 + 1;
+            Vertex1_2 = (edge1 + 1) % polygon1.Points.Length;
 
             Polygon2 = polygon2;
             Vertex2_1 = edge2;
-            Vertex2_2 = edge2 == polygon2.Points.Length - 1 ? 0 : edge2 + 1;
+            Vertex2_2 = (edge2 + 1) % polygon2.Points.Length;
 
             Icon1 = new Icon(
                 PrefabIcons.EQ_LENGTH_ICON_COLOR,

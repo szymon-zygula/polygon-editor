@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace polygon_editor {
     class ConstantEdgeLengthConstraint : Constraint {
-        Polygon Polygon;
-        int Vertex1;
-        int Vertex2;
-        int Length;
+        readonly Polygon Polygon;
+        readonly int Vertex1;
+        readonly int Vertex2;
+        readonly int Length;
 
         public ConstantEdgeLengthConstraint(Polygon polygon, int edge, int length) {
             Polygon = polygon;
